@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Layout from './Layout/Layout';
 import Dashboard from './Dashboard/Dashboard';
 import './Shared/GlobalStyles.css';
@@ -49,60 +49,117 @@ import Integrations from './Paid/Integrations';
 import AdvancedPayments from './Paid/AdvancedPayments';
 import AdvancedReports from './Paid/AdvancedReports';
 
+import { getCurrentPage } from '../utils/wordpressUrls';
+
+// Main App Router Component
+function AppRouter() {
+  const [currentPage, setCurrentPage] = useState(getCurrentPage());
+  
+  // Listen for hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentPage(getCurrentPage());
+    };
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+  
+  // Render component based on current page
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'dashboard':
+        return <Dashboard />;
+      
+      // Epic 1: Core Booking System (Free)
+      case 'booking':
+        return <BookingCalendar />;
+      case 'booking/new':
+        return <BookingForm />;
+      case 'booking/list':
+        return <BookingList />;
+      
+      // Epic 2: Patient Management (Free)
+      case 'patients':
+        return <PatientList />;
+      case 'patients/new':
+        return <PatientForm />;
+      case 'patients/profile':
+        return <PatientProfile />;
+      
+      // Epic 3: Payment & Billing (Free)
+      case 'payments':
+        return <PaymentList />;
+      case 'payments/new':
+        return <PaymentForm />;
+      case 'billing':
+        return <BillingDashboard />;
+      
+      // Epic 4: Staff Management (Free)
+      case 'staff':
+        return <StaffList />;
+      case 'staff/new':
+        return <StaffForm />;
+      case 'staff/schedule':
+        return <StaffSchedule />;
+      
+      // Epic 5: Notifications (Free)
+      case 'notifications':
+        return <NotificationCenter />;
+      case 'notifications/settings':
+        return <NotificationSettings />;
+      
+      // Epic 6: Reporting (Free)
+      case 'reports':
+        return <ReportsDashboard />;
+      case 'reports/appointments':
+        return <AppointmentReports />;
+      case 'reports/financial':
+        return <FinancialReports />;
+      
+      // Epic 7: Roles & Permissions (Free)
+      case 'roles':
+        return <RoleManagement />;
+      case 'permissions':
+        return <PermissionSettings />;
+      
+      // Epic 8: UI/UX Enhancements (Free)
+      case 'settings':
+        return <Settings />;
+      case 'profile':
+        return <Profile />;
+      
+      // Epic 9-14: Paid Features
+      case 'multi-location':
+        return <MultiLocation />;
+      case 'advanced-staff':
+        return <AdvancedStaff />;
+      case 'advanced-notifications':
+        return <AdvancedNotifications />;
+      case 'integrations':
+        return <Integrations />;
+      case 'advanced-payments':
+        return <AdvancedPayments />;
+      case 'advanced-reports':
+        return <AdvancedReports />;
+      
+      default:
+        return <Dashboard />;
+    }
+  };
+  
+  return <Layout>{renderPage()}</Layout>;
+}
+
 export default function App() {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          
-          {/* Epic 1: Core Booking System (Free) */}
-          <Route path="/booking" element={<BookingCalendar />} />
-          <Route path="/booking/new" element={<BookingForm />} />
-          <Route path="/booking/list" element={<BookingList />} />
-          
-          {/* Epic 2: Patient Management (Free) */}
-          <Route path="/patients" element={<PatientList />} />
-          <Route path="/patients/new" element={<PatientForm />} />
-          <Route path="/patients/:id" element={<PatientProfile />} />
-          
-          {/* Epic 3: Payment & Billing (Free) */}
-          <Route path="/payments" element={<PaymentList />} />
-          <Route path="/payments/new" element={<PaymentForm />} />
-          <Route path="/billing" element={<BillingDashboard />} />
-          
-          {/* Epic 4: Staff Management (Free) */}
-          <Route path="/staff" element={<StaffList />} />
-          <Route path="/staff/new" element={<StaffForm />} />
-          <Route path="/staff/schedule" element={<StaffSchedule />} />
-          
-          {/* Epic 5: Notifications (Free) */}
-          <Route path="/notifications" element={<NotificationCenter />} />
-          <Route path="/notifications/settings" element={<NotificationSettings />} />
-          
-          {/* Epic 6: Reporting (Free) */}
-          <Route path="/reports" element={<ReportsDashboard />} />
-          <Route path="/reports/appointments" element={<AppointmentReports />} />
-          <Route path="/reports/financial" element={<FinancialReports />} />
-          
-          {/* Epic 7: Roles & Permissions (Free) */}
-          <Route path="/roles" element={<RoleManagement />} />
-          <Route path="/permissions" element={<PermissionSettings />} />
-          
-          {/* Epic 8: UI/UX Enhancements (Free) */}
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/profile" element={<Profile />} />
-          
-          {/* Epic 9-14: Paid Features */}
-          <Route path="/multi-location" element={<MultiLocation />} />
-          <Route path="/advanced-staff" element={<AdvancedStaff />} />
-          <Route path="/advanced-notifications" element={<AdvancedNotifications />} />
-          <Route path="/integrations" element={<Integrations />} />
-          <Route path="/advanced-payments" element={<AdvancedPayments />} />
-          <Route path="/advanced-reports" element={<AdvancedReports />} />
-        </Routes>
-      </Layout>
+      <AppRouter />
     </Router>
   );
 }

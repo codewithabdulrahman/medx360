@@ -14,19 +14,19 @@
 
 .medx360-form-header h2 {
   margin: 0;
-  color: #2c3e50;
+  color: #333F48;
   font-size: 24px;
 }
 
 .medx360-back-btn {
-  color: #3498db;
+  color: #2CA6A4;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .medx360-back-btn:hover {
-  color: #2980b9;
+  color: #1A3D5C;
 }
 
 .medx360-form {
@@ -50,7 +50,7 @@
 
 .medx360-form-group label {
   margin-bottom: 8px;
-  color: #2c3e50;
+  color: #333F48;
   font-weight: 500;
   font-size: 14px;
 }
@@ -70,7 +70,7 @@
 .medx360-form-group select:focus,
 .medx360-form-group textarea:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #2CA6A4;
 }
 
 .medx360-form-group textarea {
@@ -101,21 +101,21 @@
 }
 
 .medx360-btn-primary {
-  background: #3498db;
+  background: #2CA6A4;
   color: white;
 }
 
 .medx360-btn-primary:hover {
-  background: #2980b9;
+  background: #1A3D5C;
 }
 
 .medx360-btn-secondary {
-  background: #95a5a6;
+  background: #A0A7B1;
   color: white;
 }
 
 .medx360-btn-secondary:hover {
-  background: #7f8c8d;
+  background: #333F48;
 }
 
 /* Responsive Design */

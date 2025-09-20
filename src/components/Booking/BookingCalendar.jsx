@@ -15,10 +15,10 @@ const BookingCalendar = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'confirmed': return '#2ecc71';
-      case 'pending': return '#f39c12';
-      case 'cancelled': return '#e74c3c';
-      default: return '#95a5a6';
+      case 'confirmed': return '#56C596';
+      case 'pending': return '#FFC107';
+      case 'cancelled': return '#DC3545';
+      default: return '#A0A7B1';
     }
   };
 

@@ -54,7 +54,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -79,21 +79,21 @@
   font-size: 32px;
   color: white;
   flex-shrink: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
+  box-shadow: 0 8px 20px rgba(44, 166, 164, 0.3);
 }
 
 .medx360-stat-content h3 {
   margin: 0 0 8px 0;
   font-size: 32px;
   font-weight: 800;
-  color: #1a1a1a;
+  color: #333F48;
   line-height: 1.2;
 }
 
 .medx360-stat-content p {
   margin: 0;
-  color: #6b7280;
+  color: #A0A7B1;
   font-size: 15px;
   font-weight: 600;
 }
@@ -124,15 +124,15 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
 }
 
 .medx360-dashboard-section h3 {
   margin: 0 0 32px 0;
-  color: #1a1a1a;
+  color: #333F48;
   font-size: 24px;
   font-weight: 700;
-  border-bottom: 3px solid rgba(102, 126, 234, 0.2);
+  border-bottom: 3px solid rgba(44, 166, 164, 0.2);
   padding-bottom: 16px;
 }
 
@@ -149,7 +149,7 @@
   align-items: center;
   padding: 32px 24px;
   text-decoration: none;
-  color: #1a1a1a;
+  color: #333F48;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -166,7 +166,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -176,7 +176,7 @@
 }
 
 .medx360-quick-action:hover {
-  border-color: rgba(102, 126, 234, 0.4);
+  border-color: rgba(44, 166, 164, 0.4);
   transform: translateY(-6px);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
   background: rgba(255, 255, 255, 1);
@@ -192,8 +192,8 @@
   font-size: 28px;
   color: white;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
+  box-shadow: 0 8px 20px rgba(44, 166, 164, 0.3);
 }
 
 .medx360-quick-action span {
@@ -217,7 +217,7 @@
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #2CA6A4;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
@@ -242,36 +242,38 @@
 }
 
 .medx360-activity-booking {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
 }
 
 .medx360-activity-payment {
-  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  background: linear-gradient(135deg, #56C596 0%, #28A745 100%);
 }
 
 .medx360-activity-patient {
-  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  background: linear-gradient(135deg, #FFC107 0%, #FF8F00 100%);
 }
 
 .medx360-activity-staff {
-  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+  background: linear-gradient(135deg, #5C7AEA 0%, #4C63D2 100%);
 }
 
 .medx360-activity-content p {
   margin: 0 0 8px 0;
-  color: #1a1a1a;
+  color: #333F48;
   font-weight: 700;
   font-size: 15px;
   line-height: 1.4;
 }
 
 .medx360-activity-time {
-  color: #6b7280;
+  color: #A0A7B1;
   font-size: 13px;
   font-weight: 600;
 }
 
 /* Modern Responsive Design */
+
+/* Tablet Landscape */
 @media (max-width: 1024px) {
   .medx360-stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -281,26 +283,9 @@
   .medx360-dashboard {
     padding: 24px;
   }
-}
-
-@media (max-width: 768px) {
-  .medx360-dashboard-content {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
   
-  .medx360-stats-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  
-  .medx360-quick-actions {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .medx360-dashboard-section {
-    padding: 28px 24px;
+  .medx360-dashboard-header {
+    margin-bottom: 40px;
   }
   
   .medx360-dashboard-header h2 {
@@ -310,46 +295,41 @@
   .medx360-dashboard-header p {
     font-size: 18px;
   }
-  
-  .medx360-stat-card {
-    padding: 28px 24px;
-  }
-  
-  .medx360-stat-icon {
-    width: 64px;
-    height: 64px;
-    font-size: 28px;
-  }
-  
-  .medx360-stat-content h3 {
-    font-size: 28px;
-  }
-  
-  .medx360-quick-action {
-    padding: 28px 20px;
-  }
-  
-  .medx360-quick-action-icon {
-    width: 56px;
-    height: 56px;
-    font-size: 24px;
-  }
-  
-  .medx360-activity {
+}
+
+/* Tablet Portrait */
+@media (max-width: 768px) {
+  .medx360-dashboard {
     padding: 20px;
+  }
+  
+  .medx360-dashboard-content {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  
+  .medx360-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  
+  .medx360-quick-actions {
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
   
-  .medx360-activity-icon {
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
+  .medx360-dashboard-section {
+    padding: 24px 20px;
   }
-}
-
-@media (max-width: 480px) {
-  .medx360-dashboard {
-    padding: 20px;
+  
+  .medx360-dashboard-section h3 {
+    font-size: 20px;
+    margin-bottom: 24px;
+  }
+  
+  .medx360-dashboard-header {
+    margin-bottom: 32px;
   }
   
   .medx360-dashboard-header h2 {
@@ -366,6 +346,82 @@
   }
   
   .medx360-stat-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 26px;
+  }
+  
+  .medx360-stat-content h3 {
+    font-size: 26px;
+  }
+  
+  .medx360-stat-content p {
+    font-size: 14px;
+  }
+  
+  .medx360-quick-action {
+    padding: 24px 16px;
+  }
+  
+  .medx360-quick-action-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
+  }
+  
+  .medx360-quick-action span {
+    font-size: 14px;
+  }
+  
+  .medx360-activity {
+    padding: 18px;
+    gap: 14px;
+  }
+  
+  .medx360-activity-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 19px;
+  }
+  
+  .medx360-activity-content p {
+    font-size: 14px;
+  }
+  
+  .medx360-activity-time {
+    font-size: 12px;
+  }
+}
+
+/* Mobile Landscape */
+@media (max-width: 640px) {
+  .medx360-dashboard {
+    padding: 16px;
+  }
+  
+  .medx360-dashboard-header {
+    margin-bottom: 28px;
+  }
+  
+  .medx360-dashboard-header h2 {
+    font-size: 24px;
+  }
+  
+  .medx360-dashboard-header p {
+    font-size: 15px;
+  }
+  
+  .medx360-stats-grid {
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .medx360-stat-card {
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  
+  .medx360-stat-icon {
     width: 56px;
     height: 56px;
     font-size: 24px;
@@ -375,16 +431,26 @@
     font-size: 24px;
   }
   
+  .medx360-stat-content p {
+    font-size: 13px;
+  }
+  
   .medx360-dashboard-section {
-    padding: 24px 20px;
+    padding: 20px 16px;
   }
   
   .medx360-dashboard-section h3 {
-    font-size: 20px;
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .medx360-quick-actions {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
   
   .medx360-quick-action {
-    padding: 24px 16px;
+    padding: 20px 14px;
   }
   
   .medx360-quick-action-icon {
@@ -394,7 +460,7 @@
   }
   
   .medx360-quick-action span {
-    font-size: 14px;
+    font-size: 13px;
   }
   
   .medx360-activity {
@@ -403,16 +469,186 @@
   }
   
   .medx360-activity-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+  
+  .medx360-activity-content p {
+    font-size: 13px;
+  }
+  
+  .medx360-activity-time {
+    font-size: 11px;
+  }
+}
+
+/* Mobile Portrait */
+@media (max-width: 480px) {
+  .medx360-dashboard {
+    padding: 12px;
+  }
+  
+  .medx360-dashboard-header {
+    margin-bottom: 24px;
+  }
+  
+  .medx360-dashboard-header h2 {
+    font-size: 22px;
+  }
+  
+  .medx360-dashboard-header p {
+    font-size: 14px;
+  }
+  
+  .medx360-stats-grid {
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  
+  .medx360-stat-card {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+  
+  .medx360-stat-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+  
+  .medx360-stat-content h3 {
+    font-size: 20px;
+  }
+  
+  .medx360-stat-content p {
+    font-size: 12px;
+  }
+  
+  .medx360-dashboard-section {
+    padding: 16px 12px;
+  }
+  
+  .medx360-dashboard-section h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .medx360-quick-action {
+    padding: 16px 12px;
+  }
+  
+  .medx360-quick-action-icon {
     width: 44px;
     height: 44px;
     font-size: 18px;
   }
   
+  .medx360-quick-action span {
+    font-size: 12px;
+  }
+  
+  .medx360-activity {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .medx360-activity-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
   .medx360-activity-content p {
-    font-size: 14px;
+    font-size: 12px;
   }
   
   .medx360-activity-time {
-    font-size: 12px;
+    font-size: 10px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 360px) {
+  .medx360-dashboard {
+    padding: 8px;
+  }
+  
+  .medx360-dashboard-header {
+    margin-bottom: 20px;
+  }
+  
+  .medx360-dashboard-header h2 {
+    font-size: 20px;
+  }
+  
+  .medx360-dashboard-header p {
+    font-size: 13px;
+  }
+  
+  .medx360-stats-grid {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  
+  .medx360-stat-card {
+    padding: 12px 8px;
+    gap: 8px;
+  }
+  
+  .medx360-stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .medx360-stat-content h3 {
+    font-size: 18px;
+  }
+  
+  .medx360-stat-content p {
+    font-size: 11px;
+  }
+  
+  .medx360-dashboard-section {
+    padding: 12px 8px;
+  }
+  
+  .medx360-dashboard-section h3 {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  
+  .medx360-quick-action {
+    padding: 12px 8px;
+  }
+  
+  .medx360-quick-action-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  
+  .medx360-quick-action span {
+    font-size: 11px;
+  }
+  
+  .medx360-activity {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .medx360-activity-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .medx360-activity-content p {
+    font-size: 11px;
+  }
+  
+  .medx360-activity-time {
+    font-size: 9px;
   }
 }

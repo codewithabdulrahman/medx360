@@ -1,13 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { getWordPressUrl, WORDPRESS_PAGES } from '../../utils/wordpressUrls';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const stats = [
-    { label: 'Today\'s Appointments', value: '12', icon: '📅', color: '#3498db' },
-    { label: 'Total Patients', value: '1,247', icon: '👥', color: '#2ecc71' },
-    { label: 'Pending Payments', value: '8', icon: '💳', color: '#f39c12' },
-    { label: 'Staff Members', value: '15', icon: '👨‍⚕️', color: '#9b59b6' },
+    { label: 'Today\'s Appointments', value: '12', icon: '📅', color: '#2CA6A4' },
+    { label: 'Total Patients', value: '1,247', icon: '👥', color: '#56C596' },
+    { label: 'Pending Payments', value: '8', icon: '💳', color: '#FFC107' },
+    { label: 'Staff Members', value: '15', icon: '👨‍⚕️', color: '#5C7AEA' },
   ];
 
   const recentActivities = [
@@ -18,10 +18,10 @@ const Dashboard = () => {
   ];
 
   const quickActions = [
-    { path: '/booking/new', label: 'New Booking', icon: '➕', color: '#3498db' },
-    { path: '/patients/new', label: 'Add Patient', icon: '👤', color: '#2ecc71' },
-    { path: '/payments/new', label: 'Record Payment', icon: '💳', color: '#f39c12' },
-    { path: '/staff/new', label: 'Add Staff', icon: '👨‍⚕️', color: '#9b59b6' },
+    { page: WORDPRESS_PAGES.BOOKING_NEW, label: 'New Booking', icon: '➕', color: '#2CA6A4' },
+    { page: WORDPRESS_PAGES.PATIENTS_NEW, label: 'Add Patient', icon: '👤', color: '#56C596' },
+    { page: WORDPRESS_PAGES.PAYMENTS_NEW, label: 'Record Payment', icon: '💳', color: '#FFC107' },
+    { page: WORDPRESS_PAGES.STAFF_NEW, label: 'Add Staff', icon: '👨‍⚕️', color: '#5C7AEA' },
   ];
 
   return (
@@ -52,12 +52,12 @@ const Dashboard = () => {
           <h3>Quick Actions</h3>
           <div className="medx360-quick-actions">
             {quickActions.map((action, index) => (
-              <Link key={index} to={action.path} className="medx360-quick-action">
+              <a key={index} href={getWordPressUrl(action.page)} className="medx360-quick-action">
                 <div className="medx360-quick-action-icon" style={{ backgroundColor: action.color }}>
                   {action.icon}
                 </div>
                 <span>{action.label}</span>
-              </Link>
+              </a>
             ))}
           </div>
         </div>

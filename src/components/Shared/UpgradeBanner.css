@@ -1,0 +1,254 @@
+/* Upgrade Banner Styles */
+.medx360-upgrade-banner {
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
+  color: white;
+  padding: 40px 30px;
+  border-radius: 16px;
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(44, 166, 164, 0.3);
+}
+
+.medx360-upgrade-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.medx360-upgrade-content {
+  position: relative;
+  z-index: 1;
+}
+
+.medx360-upgrade-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.medx360-upgrade-banner h2 {
+  margin: 0 0 16px 0;
+  font-size: 32px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.medx360-upgrade-banner p {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  opacity: 0.95;
+  line-height: 1.5;
+}
+
+.medx360-upgrade-description {
+  font-size: 16px !important;
+  opacity: 0.8 !important;
+  margin-bottom: 30px !important;
+}
+
+.medx360-upgrade-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.medx360-upgrade-btn {
+  background: linear-gradient(135deg, #56C596 0%, #28A745 100%);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(86, 197, 150, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.medx360-upgrade-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(86, 197, 150, 0.4);
+  background: linear-gradient(135deg, #28A745 0%, #1E7E34 100%);
+}
+
+.medx360-learn-more-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.medx360-learn-more-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+
+/* Tablet Portrait */
+@media (max-width: 768px) {
+  .medx360-upgrade-banner {
+    padding: 30px 20px;
+    margin: 16px 0;
+  }
+  
+  .medx360-upgrade-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+  
+  .medx360-upgrade-banner h2 {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  
+  .medx360-upgrade-banner p {
+    font-size: 16px;
+  }
+  
+  .medx360-upgrade-description {
+    font-size: 14px !important;
+    margin-bottom: 24px !important;
+  }
+  
+  .medx360-upgrade-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .medx360-upgrade-btn,
+  .medx360-learn-more-btn {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* Mobile Landscape */
+@media (max-width: 640px) {
+  .medx360-upgrade-banner {
+    padding: 24px 16px;
+    margin: 12px 0;
+  }
+  
+  .medx360-upgrade-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+  
+  .medx360-upgrade-banner h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .medx360-upgrade-banner p {
+    font-size: 14px;
+  }
+  
+  .medx360-upgrade-description {
+    font-size: 13px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .medx360-upgrade-btn,
+  .medx360-learn-more-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile Portrait */
+@media (max-width: 480px) {
+  .medx360-upgrade-banner {
+    padding: 20px 12px;
+    margin: 8px 0;
+  }
+  
+  .medx360-upgrade-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+  
+  .medx360-upgrade-banner h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  
+  .medx360-upgrade-banner p {
+    font-size: 13px;
+  }
+  
+  .medx360-upgrade-description {
+    font-size: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .medx360-upgrade-actions {
+    gap: 8px;
+  }
+  
+  .medx360-upgrade-btn,
+  .medx360-learn-more-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 360px) {
+  .medx360-upgrade-banner {
+    padding: 16px 8px;
+    margin: 6px 0;
+  }
+  
+  .medx360-upgrade-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  
+  .medx360-upgrade-banner h2 {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  
+  .medx360-upgrade-banner p {
+    font-size: 12px;
+  }
+  
+  .medx360-upgrade-description {
+    font-size: 11px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .medx360-upgrade-actions {
+    gap: 6px;
+  }
+  
+  .medx360-upgrade-btn,
+  .medx360-learn-more-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

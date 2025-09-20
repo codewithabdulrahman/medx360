@@ -14,7 +14,7 @@
 
 .medx360-calendar-header h2 {
   margin: 0;
-  color: #2c3e50;
+  color: #333F48;
   font-size: 24px;
 }
 
@@ -81,12 +81,12 @@
 
 .medx360-calendar-placeholder h3 {
   margin: 0 0 10px 0;
-  color: #2c3e50;
+  color: #333F48;
 }
 
 .medx360-day-view h3 {
   margin: 0 0 20px 0;
-  color: #2c3e50;
+  color: #333F48;
   font-size: 20px;
 }
 
@@ -114,7 +114,7 @@
 .medx360-appointment-time {
   font-size: 18px;
   font-weight: bold;
-  color: #2c3e50;
+  color: #333F48;
   min-width: 80px;
 }
 
@@ -125,7 +125,7 @@
 
 .medx360-appointment-details h4 {
   margin: 0 0 5px 0;
-  color: #2c3e50;
+  color: #333F48;
   font-size: 16px;
 }
 
