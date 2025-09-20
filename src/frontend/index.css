@@ -1,0 +1,47 @@
+/* Frontend Styles */
+#medx360-booking-app {
+  min-height: 100vh;
+}
+
+.medx360-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.medx360-error {
+  color: #d32f2f;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Custom Material-UI overrides */
+.MuiButton-root {
+  text-transform: none;
+}
+
+.MuiStepper-root {
+  margin-bottom: 2rem;
+}
+
+.MuiStepLabel-label {
+  font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .MuiContainer-root {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  .MuiStepper-root {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  .MuiStepLabel-label {
+    font-size: 0.75rem;
+  }
+}

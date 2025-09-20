@@ -1,0 +1,35 @@
+/* Admin Styles */
+#medx360-admin {
+  min-height: 100vh;
+  margin-left: -20px; /* Offset WordPress admin content padding */
+  margin-right: -20px;
+  position: relative;
+  z-index: 1;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.medx360-admin-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.medx360-admin-error {
+  color: #d32f2f;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Custom Material-UI overrides */
+.MuiButton-root {
+  text-transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .MuiContainer-root {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
