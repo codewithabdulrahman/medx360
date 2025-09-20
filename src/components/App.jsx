@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Layout from './Layout/Layout';
 import Dashboard from './Dashboard/Dashboard';
+import SetupWizard from './Onboarding/SetupWizard';
+import { ToastProvider } from './Shared/ToastContext';
 import './Shared/GlobalStyles.css';
+import './Shared/Toast.css';
 
 // Epic 1: Core Booking System (Free)
 import BookingCalendar from './Booking/BookingCalendar';
@@ -41,13 +44,14 @@ import PermissionSettings from './Roles/PermissionSettings';
 import Settings from './Settings/Settings';
 import Profile from './Profile/Profile';
 
-// Epic 9-14: Paid Features
-import MultiLocation from './Paid/MultiLocation';
-import AdvancedStaff from './Paid/AdvancedStaff';
-import AdvancedNotifications from './Paid/AdvancedNotifications';
-import Integrations from './Paid/Integrations';
-import AdvancedPayments from './Paid/AdvancedPayments';
-import AdvancedReports from './Paid/AdvancedReports';
+// Clinic Management
+import ClinicList from './Clinic/ClinicList';
+import ClinicForm from './Clinic/ClinicForm';
+
+// Service Management
+import ServiceList from './Services/ServiceList';
+import ServiceForm from './Services/ServiceForm';
+
 
 import { getCurrentPage } from '../utils/wordpressUrls';
 
@@ -75,6 +79,8 @@ function AppRouter() {
     switch (currentPage) {
       case 'dashboard':
         return <Dashboard />;
+      case 'setup':
+        return <SetupWizard />;
       
       // Epic 1: Core Booking System (Free)
       case 'booking':
@@ -134,19 +140,22 @@ function AppRouter() {
       case 'profile':
         return <Profile />;
       
-      // Epic 9-14: Paid Features
-      case 'multi-location':
-        return <MultiLocation />;
-      case 'advanced-staff':
-        return <AdvancedStaff />;
-      case 'advanced-notifications':
-        return <AdvancedNotifications />;
-      case 'integrations':
-        return <Integrations />;
-      case 'advanced-payments':
-        return <AdvancedPayments />;
-      case 'advanced-reports':
-        return <AdvancedReports />;
+      // Clinic Management
+      case 'clinic':
+        return <ClinicList />;
+      case 'clinic/new':
+        return <ClinicForm />;
+      case 'clinic/edit':
+        return <ClinicForm />;
+      
+      // Service Management
+      case 'service':
+        return <ServiceList />;
+      case 'service/new':
+        return <ServiceForm />;
+      case 'service/edit':
+        return <ServiceForm />;
+      
       
       default:
         return <Dashboard />;
@@ -158,8 +167,10 @@ function AppRouter() {
 
 export default function App() {
   return (
-    <Router>
-      <AppRouter />
-    </Router>
+    <ToastProvider>
+      <Router>
+        <AppRouter />
+      </Router>
+    </ToastProvider>
   );
 }

@@ -1,0 +1,435 @@
+/* Medx360 Setup Wizard Styles */
+.medx360-setup-wizard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medx360-wizard-container {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.medx360-wizard-header {
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
+  color: white;
+  padding: 40px;
+  text-align: center;
+}
+
+.medx360-wizard-header h1 {
+  font-size: 32px;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.medx360-wizard-header p {
+  font-size: 18px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.medx360-progress-bar {
+  background: #f8f9fa;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.medx360-progress-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.medx360-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  flex: 1;
+}
+
+.medx360-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 60px;
+  right: -60px;
+  height: 2px;
+  background: #e9ecef;
+  z-index: 1;
+}
+
+.medx360-step.completed:not(:last-child)::after {
+  background: #2CA6A4;
+}
+
+.medx360-step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e9ecef;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.medx360-step.active .medx360-step-number {
+  background: #2CA6A4;
+  color: white;
+}
+
+.medx360-step.completed .medx360-step-number {
+  background: #56C596;
+  color: white;
+}
+
+.medx360-step-label {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6c757d;
+  text-align: center;
+}
+
+.medx360-step.active .medx360-step-label {
+  color: #2CA6A4;
+  font-weight: 600;
+}
+
+.medx360-wizard-content {
+  padding: 40px;
+  min-height: 400px;
+}
+
+.medx360-setup-step {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.medx360-step-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.medx360-step-header h2 {
+  font-size: 28px;
+  color: #333F48;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.medx360-step-header p {
+  font-size: 16px;
+  color: #A0A7B1;
+  margin: 0;
+}
+
+.medx360-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.medx360-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.medx360-form-group.medx360-full-width {
+  grid-column: 1 / -1;
+}
+
+.medx360-form-group label {
+  font-weight: 600;
+  color: #333F48;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.medx360-form-group input,
+.medx360-form-group select,
+.medx360-form-group textarea {
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.medx360-form-group input:focus,
+.medx360-form-group select:focus,
+.medx360-form-group textarea:focus {
+  outline: none;
+  border-color: #2CA6A4;
+  box-shadow: 0 0 0 3px rgba(44, 166, 164, 0.1);
+}
+
+.medx360-services-list,
+.medx360-practitioners-list {
+  space-y: 20px;
+}
+
+.medx360-service-item,
+.medx360-practitioner-item {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+}
+
+.medx360-add-btn,
+.medx360-remove-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.medx360-add-btn {
+  background: #2CA6A4;
+  color: white;
+  margin-top: 20px;
+}
+
+.medx360-add-btn:hover {
+  background: #1A3D5C;
+  transform: translateY(-2px);
+}
+
+.medx360-remove-btn {
+  background: #DC3545;
+  color: white;
+  margin-top: 10px;
+}
+
+.medx360-remove-btn:hover {
+  background: #c82333;
+}
+
+.medx360-notifications-section {
+  margin-top: 30px;
+}
+
+.medx360-notification-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.medx360-checkbox-label,
+.medx360-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #333F48;
+}
+
+.medx360-checkbox-label input,
+.medx360-radio-label input {
+  width: 18px;
+  height: 18px;
+  accent-color: #2CA6A4;
+}
+
+.medx360-payment-section {
+  margin-top: 20px;
+}
+
+.medx360-completion-section {
+  text-align: center;
+}
+
+.medx360-summary {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.medx360-summary h3 {
+  color: #333F48;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.medx360-summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.medx360-summary li {
+  padding: 8px 0;
+  color: #56C596;
+  font-weight: 500;
+}
+
+.medx360-test-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.medx360-wizard-footer {
+  background: #f8f9fa;
+  padding: 30px 40px;
+  border-top: 1px solid #e9ecef;
+}
+
+.medx360-wizard-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.medx360-completion-buttons {
+  display: flex;
+  gap: 20px;
+  margin-left: auto;
+}
+
+.medx360-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.medx360-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.medx360-btn-primary {
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
+  color: white;
+}
+
+.medx360-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(44, 166, 164, 0.3);
+}
+
+.medx360-btn-secondary {
+  background: white;
+  color: #2CA6A4;
+  border: 2px solid #2CA6A4;
+}
+
+.medx360-btn-secondary:hover:not(:disabled) {
+  background: #2CA6A4;
+  color: white;
+}
+
+.medx360-skip-setup {
+  text-align: center;
+}
+
+.medx360-skip-btn {
+  background: none;
+  border: none;
+  color: #A0A7B1;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.medx360-skip-btn:hover {
+  color: #2CA6A4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .medx360-setup-wizard {
+    padding: 10px;
+  }
+  
+  .medx360-wizard-container {
+    border-radius: 15px;
+  }
+  
+  .medx360-wizard-header {
+    padding: 30px 20px;
+  }
+  
+  .medx360-wizard-header h1 {
+    font-size: 24px;
+  }
+  
+  .medx360-progress-bar {
+    padding: 15px 20px;
+  }
+  
+  .medx360-progress-steps {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .medx360-step {
+    flex: 0 0 calc(50% - 5px);
+  }
+  
+  .medx360-step:not(:last-child)::after {
+    display: none;
+  }
+  
+  .medx360-wizard-content {
+    padding: 20px;
+  }
+  
+  .medx360-form-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .medx360-wizard-footer {
+    padding: 20px;
+  }
+  
+  .medx360-wizard-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .medx360-completion-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .medx360-test-actions {
+    flex-direction: column;
+  }
+}

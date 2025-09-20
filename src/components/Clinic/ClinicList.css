@@ -1,5 +1,5 @@
-/* Staff List Styles */
-.medx360-staff-list {
+/* Clinic List Styles */
+.medx360-clinic-list {
   padding: 20px;
   background: #f8f9fa;
   min-height: 100vh;
@@ -43,16 +43,11 @@
   padding: 20px;
   margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  flex-wrap: wrap;
 }
 
 .medx360-search-box {
   position: relative;
-  flex: 1;
-  min-width: 300px;
+  max-width: 500px;
 }
 
 .medx360-search-input {
@@ -77,34 +72,6 @@
   transform: translateY(-50%);
   font-size: 16px;
   color: #A0A7B1;
-}
-
-.medx360-filter-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.medx360-filter-group label {
-  font-weight: 600;
-  color: #333F48;
-  font-size: 14px;
-}
-
-.medx360-filter-select {
-  padding: 12px 16px;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 14px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.medx360-filter-select:focus {
-  outline: none;
-  border-color: #2CA6A4;
-  box-shadow: 0 0 0 3px rgba(44, 166, 164, 0.1);
 }
 
 .medx360-stats-cards {
@@ -148,77 +115,72 @@
   font-size: 14px;
 }
 
-.medx360-staff-grid {
+.medx360-clinic-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
 }
 
-.medx360-staff-card {
+.medx360-clinic-card {
   background: white;
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   border: 1px solid #e9ecef;
 }
 
-.medx360-staff-card:hover {
+.medx360-clinic-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.medx360-staff-avatar {
-  font-size: 48px;
-  text-align: center;
-  margin-bottom: 16px;
+.medx360-clinic-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
 }
 
-.medx360-staff-info h3 {
-  margin: 0 0 8px 0;
+.medx360-clinic-icon {
+  font-size: 40px;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medx360-clinic-title {
+  flex: 1;
+}
+
+.medx360-clinic-title h3 {
+  margin: 0 0 4px 0;
   font-size: 18px;
   font-weight: 700;
   color: #333F48;
-  text-align: center;
 }
 
-.medx360-staff-role {
-  margin: 0 0 4px 0;
+.medx360-clinic-type {
+  margin: 0;
   font-size: 14px;
-  font-weight: 600;
   color: #2CA6A4;
-  text-align: center;
+  font-weight: 600;
 }
 
-.medx360-staff-specialization {
-  margin: 0 0 12px 0;
-  font-size: 14px;
-  color: #A0A7B1;
-  text-align: center;
-}
-
-.medx360-staff-contact {
-  margin-bottom: 16px;
-}
-
-.medx360-staff-contact p {
-  margin: 4px 0;
-  font-size: 13px;
-  color: #6c757d;
-}
-
-.medx360-staff-meta {
+.medx360-clinic-status {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 .medx360-status-badge {
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
 }
@@ -233,12 +195,85 @@
   color: #DC3545;
 }
 
-.medx360-join-date {
-  font-size: 12px;
-  color: #A0A7B1;
+.medx360-clinic-info {
+  margin-bottom: 20px;
 }
 
-.medx360-staff-actions {
+.medx360-clinic-details {
+  margin-bottom: 16px;
+}
+
+.medx360-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.medx360-detail-icon {
+  font-size: 14px;
+  width: 20px;
+  text-align: center;
+}
+
+.medx360-detail-text {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.medx360-clinic-services {
+  margin-bottom: 16px;
+}
+
+.medx360-clinic-services h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333F48;
+}
+
+.medx360-services-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.medx360-service-tag {
+  background: rgba(44, 166, 164, 0.1);
+  color: #2CA6A4;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.medx360-clinic-metrics {
+  display: flex;
+  justify-content: space-around;
+  padding: 16px 0;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.medx360-metric {
+  text-align: center;
+}
+
+.medx360-metric-value {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #333F48;
+  margin-bottom: 4px;
+}
+
+.medx360-metric-label {
+  font-size: 12px;
+  color: #A0A7B1;
+  font-weight: 500;
+}
+
+.medx360-clinic-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -325,8 +360,12 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .medx360-staff-list {
+  .medx360-clinic-list {
     padding: 12px;
+  }
+  
+  .medx360-page-header {
+    padding: 20px;
   }
   
   .medx360-header-content {
@@ -335,44 +374,36 @@
     align-items: stretch;
   }
   
-  .medx360-filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .medx360-search-box {
-    min-width: auto;
-  }
-  
-  .medx360-stats-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .medx360-staff-grid {
+  .medx360-clinic-grid {
     grid-template-columns: 1fr;
   }
   
-  .medx360-staff-meta {
+  .medx360-clinic-header {
     flex-direction: column;
     align-items: stretch;
+    text-align: center;
   }
   
-  .medx360-staff-actions {
+  .medx360-clinic-actions {
     justify-content: center;
+  }
+  
+  .medx360-clinic-metrics {
+    justify-content: space-between;
   }
 }
 
 @media (max-width: 480px) {
   .medx360-stats-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .medx360-staff-actions {
+  .medx360-clinic-actions {
     flex-direction: column;
   }
-}
-
-.medx360-staff-list h2 {
-  color: #333F48;
-  margin-bottom: 20px;
+  
+  .medx360-clinic-metrics {
+    flex-direction: column;
+    gap: 12px;
+  }
 }

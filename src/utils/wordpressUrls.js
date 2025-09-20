@@ -69,6 +69,7 @@ export const navigateToPageProgrammatic = (page) => {
  */
 export const WORDPRESS_PAGES = {
   DASHBOARD: 'dashboard',
+  SETUP: 'setup',
   BOOKING: 'booking',
   BOOKING_NEW: 'booking/new',
   BOOKING_LIST: 'booking/list',
@@ -90,10 +91,10 @@ export const WORDPRESS_PAGES = {
   PERMISSIONS: 'permissions',
   SETTINGS: 'settings',
   PROFILE: 'profile',
-  MULTI_LOCATION: 'multi-location',
-  ADVANCED_STAFF: 'advanced-staff',
-  ADVANCED_NOTIFICATIONS: 'advanced-notifications',
-  INTEGRATIONS: 'integrations',
-  ADVANCED_PAYMENTS: 'advanced-payments',
-  ADVANCED_REPORTS: 'advanced-reports',
+  CLINIC: 'clinic',
+  CLINIC_NEW: 'clinic/new',
+  CLINIC_EDIT: 'clinic/edit',
+  SERVICE: 'service',
+  SERVICE_NEW: 'service/new',
+  SERVICE_EDIT: 'service/edit',
 };

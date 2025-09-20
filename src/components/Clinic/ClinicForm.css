@@ -1,5 +1,5 @@
-/* Staff Form Styles */
-.medx360-staff-form {
+/* Clinic Form Styles */
+.medx360-clinic-form {
   padding: 20px;
   background: #f8f9fa;
   min-height: 100vh;
@@ -112,6 +112,12 @@
   box-shadow: 0 0 0 3px rgba(44, 166, 164, 0.1);
 }
 
+.medx360-form-group input:disabled {
+  background: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
 .medx360-form-group textarea {
   resize: vertical;
   min-height: 80px;
@@ -126,6 +132,119 @@
   color: #DC3545;
   font-size: 12px;
   margin-top: 4px;
+  font-weight: 500;
+}
+
+.medx360-services-selection {
+  margin-bottom: 20px;
+}
+
+.medx360-services-selection p {
+  margin: 0 0 16px 0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.medx360-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.medx360-service-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.medx360-service-checkbox:hover {
+  border-color: #2CA6A4;
+  background: rgba(44, 166, 164, 0.05);
+}
+
+.medx360-service-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #2CA6A4;
+}
+
+.medx360-checkbox-label {
+  font-size: 14px;
+  color: #333F48;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.medx360-operating-hours {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.medx360-hours-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.medx360-day-label {
+  min-width: 120px;
+}
+
+.medx360-day-label .medx360-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #333F48;
+}
+
+.medx360-day-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #2CA6A4;
+}
+
+.medx360-hours-inputs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.medx360-hours-inputs input[type="time"] {
+  padding: 8px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+}
+
+.medx360-hours-inputs input[type="time"]:focus {
+  outline: none;
+  border-color: #2CA6A4;
+  box-shadow: 0 0 0 3px rgba(44, 166, 164, 0.1);
+}
+
+.medx360-hours-inputs input[type="time"]:disabled {
+  background: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.medx360-hours-inputs span {
+  color: #6c757d;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -196,7 +315,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .medx360-staff-form {
+  .medx360-clinic-form {
     padding: 12px;
   }
   
@@ -219,6 +338,24 @@
     gap: 16px;
   }
   
+  .medx360-services-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .medx360-hours-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .medx360-day-label {
+    min-width: auto;
+  }
+  
+  .medx360-hours-inputs {
+    justify-content: center;
+  }
+  
   .medx360-form-actions {
     flex-direction: column;
   }
@@ -238,5 +375,10 @@
   .medx360-form-group textarea {
     padding: 10px 12px;
     font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .medx360-hours-inputs {
+    flex-direction: column;
+    gap: 8px;
   }
 }

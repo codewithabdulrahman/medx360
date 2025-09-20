@@ -1,79 +1,51 @@
 <?php
 /**
- * Database Management Class
- * Handles table creation, updates, and migrations
+ * Migration 1.0.0 - Create Core Tables
+ * Creates all the basic tables needed for the plugin
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class Medx360_Database {
+require_once MEDX360_PLUGIN_DIR . 'includes/database/Migration.php';
+
+class Medx360_Migration_1_0_0 extends Medx360_Migration {
     
-    private $version = '1.0.0';
-    private $tables = array();
-    private $migration_manager;
-    
-    public function __construct() {
-        $this->define_tables();
-        add_action('init', array($this, 'init'));
-    }
-    
-    public function init() {
-        // Database initialization is now handled by the bootstrap
-        // This method is kept for backward compatibility
-    }
-    
-    /**
-     * Define all database tables
-     */
-    private function define_tables() {
-        global $wpdb;
+    public function up() {
+        $this->create_patients_table();
+        $this->create_appointments_table();
+        $this->create_staff_table();
+        $this->create_clinics_table();
+        $this->create_services_table();
+        $this->create_payments_table();
+        $this->create_notifications_table();
+        $this->create_roles_table();
+        $this->create_permissions_table();
+        $this->create_settings_table();
         
-        $this->tables = array(
-            'patients' => $wpdb->prefix . 'medx360_patients',
-            'appointments' => $wpdb->prefix . 'medx360_appointments',
-            'staff' => $wpdb->prefix . 'medx360_staff',
-            'clinics' => $wpdb->prefix . 'medx360_clinics',
-            'services' => $wpdb->prefix . 'medx360_services',
-            'payments' => $wpdb->prefix . 'medx360_payments',
-            'notifications' => $wpdb->prefix . 'medx360_notifications',
-            'roles' => $wpdb->prefix . 'medx360_roles',
-            'permissions' => $wpdb->prefix . 'medx360_permissions',
-            'settings' => $wpdb->prefix . 'medx360_settings',
-            'locations' => $wpdb->prefix . 'medx360_locations', // Premium
-            'resources' => $wpdb->prefix . 'medx360_resources', // Premium
-            'integrations' => $wpdb->prefix . 'medx360_integrations', // Premium
-            'reports' => $wpdb->prefix . 'medx360_reports', // Premium
-        );
+        $this->insert_initial_data();
     }
     
-    /**
-     * Get table name
-     */
-    public function get_table($table_name) {
-        return isset($this->tables[$table_name]) ? $this->tables[$table_name] : null;
+    public function down() {
+        // Drop tables in reverse order to handle foreign keys
+        $this->drop_table_if_exists($this->database->get_table('permissions'));
+        $this->drop_table_if_exists($this->database->get_table('roles'));
+        $this->drop_table_if_exists($this->database->get_table('notifications'));
+        $this->drop_table_if_exists($this->database->get_table('payments'));
+        $this->drop_table_if_exists($this->database->get_table('services'));
+        $this->drop_table_if_exists($this->database->get_table('clinics'));
+        $this->drop_table_if_exists($this->database->get_table('staff'));
+        $this->drop_table_if_exists($this->database->get_table('appointments'));
+        $this->drop_table_if_exists($this->database->get_table('patients'));
+        $this->drop_table_if_exists($this->database->get_table('settings'));
     }
     
-    /**
-     * Create all tables using migration system
-     */
-    public function create_tables() {
-        // The migration manager will handle all table creation
-        // This method is kept for backward compatibility
-        $this->migration_manager->create_migrations_table();
-        $this->migration_manager->run_migrations('0.0.0', $this->version);
-    }
-    
-    /**
-     * Create patients table
-     */
     private function create_patients_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('patients');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('patients');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -99,18 +71,14 @@ class Medx360_Database {
             KEY created_at (created_at)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create appointments table
-     */
     private function create_appointments_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('appointments');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('appointments');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -129,23 +97,17 @@ class Medx360_Database {
             KEY patient_id (patient_id),
             KEY staff_id (staff_id),
             KEY appointment_date (appointment_date),
-            KEY status (status),
-            FOREIGN KEY (patient_id) REFERENCES {$this->get_table('patients')}(id) ON DELETE CASCADE,
-            FOREIGN KEY (staff_id) REFERENCES {$this->get_table('staff')}(id) ON DELETE CASCADE
+            KEY status (status)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create staff table
-     */
     private function create_staff_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('staff');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('staff');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -165,22 +127,17 @@ class Medx360_Database {
             PRIMARY KEY (id),
             UNIQUE KEY email (email),
             KEY user_id (user_id),
-            KEY status (status),
-            FOREIGN KEY (user_id) REFERENCES {$wpdb->prefix}users(ID) ON DELETE SET NULL
+            KEY status (status)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create clinics table
-     */
     private function create_clinics_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('clinics');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('clinics');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -204,18 +161,14 @@ class Medx360_Database {
             KEY created_at (created_at)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create services table
-     */
     private function create_services_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('services');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('services');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -240,18 +193,14 @@ class Medx360_Database {
             KEY created_at (created_at)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create payments table
-     */
     private function create_payments_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('payments');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('payments');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -269,23 +218,17 @@ class Medx360_Database {
             KEY patient_id (patient_id),
             KEY appointment_id (appointment_id),
             KEY payment_status (payment_status),
-            KEY payment_date (payment_date),
-            FOREIGN KEY (patient_id) REFERENCES {$this->get_table('patients')}(id) ON DELETE CASCADE,
-            FOREIGN KEY (appointment_id) REFERENCES {$this->get_table('appointments')}(id) ON DELETE SET NULL
+            KEY payment_date (payment_date)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create notifications table
-     */
     private function create_notifications_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('notifications');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('notifications');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -300,22 +243,17 @@ class Medx360_Database {
             KEY user_id (user_id),
             KEY type (type),
             KEY is_read (is_read),
-            KEY created_at (created_at),
-            FOREIGN KEY (user_id) REFERENCES {$wpdb->prefix}users(ID) ON DELETE CASCADE
+            KEY created_at (created_at)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create roles table
-     */
     private function create_roles_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('roles');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('roles');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -330,18 +268,14 @@ class Medx360_Database {
             UNIQUE KEY name (name)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create permissions table
-     */
     private function create_permissions_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('permissions');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('permissions');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -352,23 +286,17 @@ class Medx360_Database {
             expires_at datetime DEFAULT NULL,
             PRIMARY KEY (id),
             KEY user_id (user_id),
-            KEY role_id (role_id),
-            FOREIGN KEY (user_id) REFERENCES {$wpdb->prefix}users(ID) ON DELETE CASCADE,
-            FOREIGN KEY (role_id) REFERENCES {$this->get_table('roles')}(id) ON DELETE CASCADE
+            KEY role_id (role_id)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create settings table
-     */
     private function create_settings_table() {
         global $wpdb;
         
-        $table_name = $this->get_table('settings');
-        
-        $charset_collate = $wpdb->get_charset_collate();
+        $table_name = $this->database->get_table('settings');
+        $charset_collate = $this->get_charset_collate();
         
         $sql = "CREATE TABLE $table_name (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -382,145 +310,18 @@ class Medx360_Database {
             UNIQUE KEY setting_key (setting_key)
         ) $charset_collate;";
         
-        dbDelta($sql);
+        $this->execute_sql($sql);
     }
     
-    /**
-     * Create locations table (Premium)
-     */
-    private function create_locations_table() {
-        global $wpdb;
-        
-        $table_name = $this->get_table('locations');
-        
-        $charset_collate = $wpdb->get_charset_collate();
-        
-        $sql = "CREATE TABLE $table_name (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            name varchar(200) NOT NULL,
-            address text NOT NULL,
-            phone varchar(20) DEFAULT NULL,
-            email varchar(100) DEFAULT NULL,
-            manager_id bigint(20) DEFAULT NULL,
-            timezone varchar(50) DEFAULT 'UTC',
-            is_active tinyint(1) DEFAULT 1,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY manager_id (manager_id),
-            KEY is_active (is_active),
-            FOREIGN KEY (manager_id) REFERENCES {$this->get_table('staff')}(id) ON DELETE SET NULL
-        ) $charset_collate;";
-        
-        dbDelta($sql);
-    }
-    
-    /**
-     * Create resources table (Premium)
-     */
-    private function create_resources_table() {
-        global $wpdb;
-        
-        $table_name = $this->get_table('resources');
-        
-        $charset_collate = $wpdb->get_charset_collate();
-        
-        $sql = "CREATE TABLE $table_name (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            name varchar(200) NOT NULL,
-            type enum('room','equipment','vehicle','other') DEFAULT 'room',
-            location_id bigint(20) DEFAULT NULL,
-            capacity int(11) DEFAULT 1,
-            hourly_rate decimal(10,2) DEFAULT 0.00,
-            is_available tinyint(1) DEFAULT 1,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY location_id (location_id),
-            KEY type (type),
-            KEY is_available (is_available),
-            FOREIGN KEY (location_id) REFERENCES {$this->get_table('locations')}(id) ON DELETE SET NULL
-        ) $charset_collate;";
-        
-        dbDelta($sql);
-    }
-    
-    /**
-     * Create integrations table (Premium)
-     */
-    private function create_integrations_table() {
-        global $wpdb;
-        
-        $table_name = $this->get_table('integrations');
-        
-        $charset_collate = $wpdb->get_charset_collate();
-        
-        $sql = "CREATE TABLE $table_name (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            name varchar(100) NOT NULL,
-            type enum('ehr','payment','sms','email','calendar','other') DEFAULT 'other',
-            api_key varchar(255) DEFAULT NULL,
-            api_secret varchar(255) DEFAULT NULL,
-            webhook_url varchar(255) DEFAULT NULL,
-            settings text DEFAULT NULL,
-            is_active tinyint(1) DEFAULT 0,
-            last_sync datetime DEFAULT NULL,
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            UNIQUE KEY name (name),
-            KEY type (type),
-            KEY is_active (is_active)
-        ) $charset_collate;";
-        
-        dbDelta($sql);
-    }
-    
-    /**
-     * Create reports table (Premium)
-     */
-    private function create_reports_table() {
-        global $wpdb;
-        
-        $table_name = $this->get_table('reports');
-        
-        $charset_collate = $wpdb->get_charset_collate();
-        
-        $sql = "CREATE TABLE $table_name (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            name varchar(200) NOT NULL,
-            type enum('appointment','financial','patient','staff','custom') DEFAULT 'custom',
-            parameters text DEFAULT NULL,
-            generated_by bigint(20) DEFAULT NULL,
-            file_path varchar(500) DEFAULT NULL,
-            status enum('pending','generating','completed','failed') DEFAULT 'pending',
-            created_at datetime DEFAULT CURRENT_TIMESTAMP,
-            completed_at datetime DEFAULT NULL,
-            PRIMARY KEY (id),
-            KEY type (type),
-            KEY generated_by (generated_by),
-            KEY status (status),
-            FOREIGN KEY (generated_by) REFERENCES {$wpdb->prefix}users(ID) ON DELETE SET NULL
-        ) $charset_collate;";
-        
-        dbDelta($sql);
-    }
-    
-    /**
-     * Insert default data
-     */
-    private function insert_default_data() {
+    private function insert_initial_data() {
         $this->insert_default_roles();
         $this->insert_default_settings();
     }
     
-    /**
-     * Insert default roles
-     */
     private function insert_default_roles() {
         global $wpdb;
         
-        $table_name = $this->get_table('roles');
+        $table_name = $this->database->get_table('roles');
         
         $default_roles = array(
             array(
@@ -553,18 +354,13 @@ class Medx360_Database {
             )
         );
         
-        foreach ($default_roles as $role) {
-            $wpdb->replace($table_name, $role);
-        }
+        parent::insert_default_data($table_name, $default_roles);
     }
     
-    /**
-     * Insert default settings
-     */
     private function insert_default_settings() {
         global $wpdb;
         
-        $table_name = $this->get_table('settings');
+        $table_name = $this->database->get_table('settings');
         
         $default_settings = array(
             array('setting_key' => 'clinic_name', 'setting_value' => 'Medx360 Clinic', 'setting_type' => 'string'),
@@ -582,65 +378,11 @@ class Medx360_Database {
             array('setting_key' => 'advanced_reporting_enabled', 'setting_value' => '0', 'setting_type' => 'boolean', 'is_premium' => 1)
         );
         
-        foreach ($default_settings as $setting) {
-            $wpdb->replace($table_name, $setting);
-        }
+        parent::insert_default_data($table_name, $default_settings);
     }
     
-    /**
-     * Check if premium features are active
-     */
-    private function is_premium_active() {
-        return get_option('medx360_premium_active', false);
-    }
-    
-    /**
-     * Check database version and update if needed
-     */
-    private function check_version() {
-        $installed_version = get_option('medx360_db_version', '0.0.0');
-        
-        if (version_compare($installed_version, $this->version, '<')) {
-            $this->create_tables();
-        }
-    }
-    
-    /**
-     * Cleanup on deactivation
-     */
-    public function cleanup() {
-        // Optionally remove tables on deactivation
-        // Uncomment the following lines if you want to remove tables on deactivation
-        
-        /*
+    private function drop_table_if_exists($table_name) {
         global $wpdb;
-        
-        foreach ($this->tables as $table) {
-            $wpdb->query("DROP TABLE IF EXISTS $table");
-        }
-        
-        delete_option('medx360_db_version');
-        */
-    }
-    
-    /**
-     * Get all table names
-     */
-    public function get_all_tables() {
-        return $this->tables;
-    }
-    
-    /**
-     * Check if table exists
-     */
-    public function table_exists($table_name) {
-        global $wpdb;
-        $table = $this->get_table($table_name);
-        
-        if (!$table) {
-            return false;
-        }
-        
-        return $wpdb->get_var("SHOW TABLES LIKE '$table'") == $table;
+        $wpdb->query("DROP TABLE IF EXISTS $table_name");
     }
 }

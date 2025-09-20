@@ -24,13 +24,14 @@ define('MEDX360_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('MEDX360_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 // Include required files
-require_once MEDX360_PLUGIN_DIR . 'includes/database/Database.php';
+require_once MEDX360_PLUGIN_DIR . 'includes/database/index.php';
 require_once MEDX360_PLUGIN_DIR . 'includes/models/BaseModel.php';
 require_once MEDX360_PLUGIN_DIR . 'includes/models/Patient.php';
 require_once MEDX360_PLUGIN_DIR . 'includes/models/Appointment.php';
 require_once MEDX360_PLUGIN_DIR . 'includes/models/Staff.php';
 require_once MEDX360_PLUGIN_DIR . 'includes/models/Payment.php';
 require_once MEDX360_PLUGIN_DIR . 'includes/api/RestAPI.php';
+require_once MEDX360_PLUGIN_DIR . 'includes/api/ClinicServiceAPI.php';
 require_once MEDX360_PLUGIN_DIR . 'includes/utils/Helper.php';
 require_once MEDX360_PLUGIN_DIR . 'includes/admin/Admin.php';
 

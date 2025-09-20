@@ -34,6 +34,12 @@ class Medx360_RestAPI {
         // Staff endpoints
         $this->register_staff_routes();
         
+        // Clinic endpoints
+        $this->register_clinic_routes();
+        
+        // Service endpoints
+        $this->register_service_routes();
+        
         // Payment endpoints
         $this->register_payment_routes();
         
@@ -253,6 +259,111 @@ class Medx360_RestAPI {
         register_rest_route($this->namespace, '/staff/(?P<id>\d+)', array(
             'methods' => 'DELETE',
             'callback' => array($this, 'delete_staff'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => array(
+                'id' => array('required' => true, 'type' => 'integer')
+            )
+        ));
+    }
+    
+    /**
+     * Register clinic routes
+     */
+    private function register_clinic_routes() {
+        register_rest_route($this->namespace, '/clinics', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_clinics'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => array(
+                'page' => array('required' => false, 'type' => 'integer', 'default' => 1),
+                'per_page' => array('required' => false, 'type' => 'integer', 'default' => 20),
+                'search' => array('required' => false, 'type' => 'string'),
+                'status' => array('required' => false, 'type' => 'string')
+            )
+        ));
+        
+        register_rest_route($this->namespace, '/clinics', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'create_clinic'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => $this->get_clinic_args()
+        ));
+        
+        register_rest_route($this->namespace, '/clinics/(?P<id>\d+)', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_clinic'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => array(
+                'id' => array('required' => true, 'type' => 'integer')
+            )
+        ));
+        
+        register_rest_route($this->namespace, '/clinics/(?P<id>\d+)', array(
+            'methods' => 'PUT',
+            'callback' => array($this, 'update_clinic'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => array_merge(
+                array('id' => array('required' => true, 'type' => 'integer')),
+                $this->get_clinic_args()
+            )
+        ));
+        
+        register_rest_route($this->namespace, '/clinics/(?P<id>\d+)', array(
+            'methods' => 'DELETE',
+            'callback' => array($this, 'delete_clinic'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => array(
+                'id' => array('required' => true, 'type' => 'integer')
+            )
+        ));
+    }
+    
+    /**
+     * Register service routes
+     */
+    private function register_service_routes() {
+        register_rest_route($this->namespace, '/services', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_services'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => array(
+                'page' => array('required' => false, 'type' => 'integer', 'default' => 1),
+                'per_page' => array('required' => false, 'type' => 'integer', 'default' => 20),
+                'search' => array('required' => false, 'type' => 'string'),
+                'category' => array('required' => false, 'type' => 'string'),
+                'status' => array('required' => false, 'type' => 'string')
+            )
+        ));
+        
+        register_rest_route($this->namespace, '/services', array(
+            'methods' => 'POST',
+            'callback' => array($this, 'create_service'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => $this->get_service_args()
+        ));
+        
+        register_rest_route($this->namespace, '/services/(?P<id>\d+)', array(
+            'methods' => 'GET',
+            'callback' => array($this, 'get_service'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => array(
+                'id' => array('required' => true, 'type' => 'integer')
+            )
+        ));
+        
+        register_rest_route($this->namespace, '/services/(?P<id>\d+)', array(
+            'methods' => 'PUT',
+            'callback' => array($this, 'update_service'),
+            'permission_callback' => array($this, 'check_permission'),
+            'args' => array_merge(
+                array('id' => array('required' => true, 'type' => 'integer')),
+                $this->get_service_args()
+            )
+        ));
+        
+        register_rest_route($this->namespace, '/services/(?P<id>\d+)', array(
+            'methods' => 'DELETE',
+            'callback' => array($this, 'delete_service'),
             'permission_callback' => array($this, 'check_permission'),
             'args' => array(
                 'id' => array('required' => true, 'type' => 'integer')
@@ -897,6 +1008,29 @@ class Medx360_RestAPI {
             'manager_id' => array('required' => false, 'type' => 'integer'),
             'timezone' => array('required' => false, 'type' => 'string', 'default' => 'UTC'),
             'is_active' => array('required' => false, 'type' => 'boolean', 'default' => true)
+        );
+    }
+    
+    private function get_clinic_args() {
+        return array(
+            'name' => array('required' => true, 'type' => 'string'),
+            'address' => array('required' => true, 'type' => 'string'),
+            'phone' => array('required' => false, 'type' => 'string'),
+            'email' => array('required' => false, 'type' => 'string', 'format' => 'email'),
+            'website' => array('required' => false, 'type' => 'string'),
+            'description' => array('required' => false, 'type' => 'string'),
+            'status' => array('required' => false, 'type' => 'string', 'enum' => array('active', 'inactive'))
+        );
+    }
+    
+    private function get_service_args() {
+        return array(
+            'name' => array('required' => true, 'type' => 'string'),
+            'description' => array('required' => false, 'type' => 'string'),
+            'price' => array('required' => true, 'type' => 'number'),
+            'duration' => array('required' => false, 'type' => 'integer', 'default' => 30),
+            'category' => array('required' => false, 'type' => 'string'),
+            'status' => array('required' => false, 'type' => 'string', 'enum' => array('active', 'inactive'))
         );
     }
     

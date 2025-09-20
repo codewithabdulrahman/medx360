@@ -59,6 +59,48 @@ A comprehensive React-based WordPress plugin implementing all 14 epics for the M
 3. Navigate to the "Medx360" menu item in the admin sidebar
 4. The React app will load with full navigation and all epic features
 
+## 🩺 First-Time Setup Wizard
+
+New users will see a setup banner on the dashboard. The setup wizard guides users through:
+
+### **Step 1: Business / Practice Info**
+- Clinic/Practice Name
+- Type of Practice (Doctor, Therapist, Dentist, etc.)
+- Business Email & Phone
+- Address & Timezone
+
+### **Step 2: Services Setup**
+- Service names and descriptions
+- Duration per service (15-120 minutes)
+- Pricing (optional)
+
+### **Step 3: Staff / Practitioners**
+- Add team members
+- Assign roles and specializations
+- Link practitioners to services
+
+### **Step 4: Booking Preferences**
+- Appointment slot intervals
+- Minimum notice period
+- Cancellation policy
+
+### **Step 5: Notifications**
+- Email/SMS/WhatsApp reminders
+- Custom message templates
+
+### **Step 6: Payment (Optional)**
+- Online payment acceptance
+- Payment gateway selection
+
+### **Step 7: Finish & Quick Test**
+- Setup summary
+- Test booking form
+- Complete setup
+
+**Access the setup wizard:**
+- URL: `http://yoursite.com/wp-admin/admin.php?page=medx360#setup`
+- Or click "Start Setup" from the dashboard banner
+
 ## 🏗️ Architecture
 
 ### Component Structure
@@ -81,6 +123,7 @@ src/components/
 
 ### Routing
 - **Dashboard:** `/dashboard`
+- **Setup Wizard:** `/setup` (First-time setup)
 - **Booking:** `/booking`, `/booking/new`, `/booking/list`
 - **Patients:** `/patients`, `/patients/new`, `/patients/:id`
 - **Payments:** `/payments`, `/payments/new`, `/billing`

@@ -1,5 +1,5 @@
-/* Staff Form Styles */
-.medx360-staff-form {
+/* Service Form Styles */
+.medx360-service-form {
   padding: 20px;
   background: #f8f9fa;
   min-height: 100vh;
@@ -129,6 +129,83 @@
   font-weight: 500;
 }
 
+.medx360-icon-selection {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.medx360-icon-option {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  background: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medx360-icon-option:hover {
+  border-color: #2CA6A4;
+  background: rgba(44, 166, 164, 0.05);
+}
+
+.medx360-icon-option.selected {
+  border-color: #2CA6A4;
+  background: rgba(44, 166, 164, 0.1);
+}
+
+.medx360-staff-selection {
+  margin-bottom: 20px;
+}
+
+.medx360-staff-selection p {
+  margin: 0 0 16px 0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.medx360-staff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.medx360-staff-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.medx360-staff-checkbox:hover {
+  border-color: #2CA6A4;
+  background: rgba(44, 166, 164, 0.05);
+}
+
+.medx360-staff-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #2CA6A4;
+}
+
+.medx360-checkbox-label {
+  font-size: 14px;
+  color: #333F48;
+  font-weight: 500;
+  cursor: pointer;
+}
+
 .medx360-form-actions {
   display: flex;
   justify-content: flex-end;
@@ -196,7 +273,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .medx360-staff-form {
+  .medx360-service-form {
     padding: 12px;
   }
   
@@ -219,6 +296,14 @@
     gap: 16px;
   }
   
+  .medx360-icon-selection {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .medx360-staff-grid {
+    grid-template-columns: 1fr;
+  }
+  
   .medx360-form-actions {
     flex-direction: column;
   }
@@ -238,5 +323,15 @@
   .medx360-form-group textarea {
     padding: 10px 12px;
     font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .medx360-icon-selection {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .medx360-icon-option {
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
   }
 }

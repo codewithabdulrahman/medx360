@@ -1,5 +1,5 @@
-/* Staff List Styles */
-.medx360-staff-list {
+/* Service List Styles */
+.medx360-service-list {
   padding: 20px;
   background: #f8f9fa;
   min-height: 100vh;
@@ -148,77 +148,72 @@
   font-size: 14px;
 }
 
-.medx360-staff-grid {
+.medx360-service-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
 }
 
-.medx360-staff-card {
+.medx360-service-card {
   background: white;
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   border: 1px solid #e9ecef;
 }
 
-.medx360-staff-card:hover {
+.medx360-service-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.medx360-staff-avatar {
-  font-size: 48px;
-  text-align: center;
-  margin-bottom: 16px;
+.medx360-service-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9ecef;
 }
 
-.medx360-staff-info h3 {
-  margin: 0 0 8px 0;
+.medx360-service-icon {
+  font-size: 40px;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2CA6A4 0%, #1A3D5C 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medx360-service-title {
+  flex: 1;
+}
+
+.medx360-service-title h3 {
+  margin: 0 0 4px 0;
   font-size: 18px;
   font-weight: 700;
   color: #333F48;
-  text-align: center;
 }
 
-.medx360-staff-role {
-  margin: 0 0 4px 0;
+.medx360-service-category {
+  margin: 0;
   font-size: 14px;
-  font-weight: 600;
   color: #2CA6A4;
-  text-align: center;
+  font-weight: 600;
 }
 
-.medx360-staff-specialization {
-  margin: 0 0 12px 0;
-  font-size: 14px;
-  color: #A0A7B1;
-  text-align: center;
-}
-
-.medx360-staff-contact {
-  margin-bottom: 16px;
-}
-
-.medx360-staff-contact p {
-  margin: 4px 0;
-  font-size: 13px;
-  color: #6c757d;
-}
-
-.medx360-staff-meta {
+.medx360-service-status {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 .medx360-status-badge {
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
 }
@@ -233,12 +228,93 @@
   color: #DC3545;
 }
 
-.medx360-join-date {
+.medx360-service-info {
+  margin-bottom: 20px;
+}
+
+.medx360-service-description {
+  margin-bottom: 16px;
+}
+
+.medx360-service-description p {
+  margin: 0;
+  font-size: 14px;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+.medx360-service-details {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.medx360-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.medx360-detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.medx360-detail-label {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.medx360-detail-value {
+  font-size: 14px;
+  color: #333F48;
+  font-weight: 600;
+}
+
+.medx360-price {
+  color: #56C596;
+  font-size: 16px;
+}
+
+.medx360-service-staff {
+  margin-bottom: 16px;
+}
+
+.medx360-service-staff h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333F48;
+}
+
+.medx360-staff-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.medx360-staff-tag {
+  background: rgba(44, 166, 164, 0.1);
+  color: #2CA6A4;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.medx360-service-meta {
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+.medx360-created-date {
   font-size: 12px;
   color: #A0A7B1;
 }
 
-.medx360-staff-actions {
+.medx360-service-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -325,8 +401,12 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .medx360-staff-list {
+  .medx360-service-list {
     padding: 12px;
+  }
+  
+  .medx360-page-header {
+    padding: 20px;
   }
   
   .medx360-header-content {
@@ -344,35 +424,33 @@
     min-width: auto;
   }
   
-  .medx360-stats-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .medx360-staff-grid {
+  .medx360-service-grid {
     grid-template-columns: 1fr;
   }
   
-  .medx360-staff-meta {
+  .medx360-service-header {
     flex-direction: column;
     align-items: stretch;
+    text-align: center;
   }
   
-  .medx360-staff-actions {
+  .medx360-service-actions {
     justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
   .medx360-stats-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
   
-  .medx360-staff-actions {
+  .medx360-service-actions {
     flex-direction: column;
   }
-}
-
-.medx360-staff-list h2 {
-  color: #333F48;
-  margin-bottom: 20px;
+  
+  .medx360-detail-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
 }

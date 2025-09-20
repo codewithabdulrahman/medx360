@@ -149,25 +149,6 @@
   box-shadow: 0 2px 8px rgba(86, 197, 150, 0.3);
 }
 
-.medx360-nav-tab.locked {
-  opacity: 0.7;
-  cursor: pointer;
-  position: relative;
-  color: #95a5a6;
-}
-
-.medx360-nav-tab.locked:hover {
-  color: #2CA6A4;
-  background: rgba(44, 166, 164, 0.08);
-  transform: translateY(-1px);
-}
-
-.medx360-nav-tab.locked::after {
-  content: "🔒";
-  font-size: 12px;
-  margin-left: 8px;
-  opacity: 0.8;
-}
 
 .medx360-nav-icon {
   font-size: 18px;
