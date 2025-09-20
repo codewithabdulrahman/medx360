@@ -9,11 +9,24 @@ namespace MedX360\Infrastructure\WP\Admin;
  */
 class AdminMenu
 {
+    private $servicesAdmin;
+    private $locationsAdmin;
+    private $providersAdmin;
+    private $patientsAdmin;
+    private $appointmentsAdmin;
+
     /**
      * Initialize admin menu
      */
     public function init()
     {
+        // Initialize admin classes
+        $this->servicesAdmin = new ServicesAdmin();
+        $this->locationsAdmin = new LocationsAdmin();
+        $this->providersAdmin = new ProvidersAdmin();
+        $this->patientsAdmin = new PatientsAdmin();
+        $this->appointmentsAdmin = new AppointmentsAdmin();
+        
         add_action('admin_menu', [$this, 'addAdminMenu']);
     }
 
@@ -140,6 +153,52 @@ class AdminMenu
             'manage_options',
             'medx360-settings',
             [$this, 'renderSettings']
+        );
+
+        // Management Pages
+        add_submenu_page(
+            'medx360',
+            __('Manage Services', 'medx360'),
+            __('Services', 'medx360'),
+            'manage_options',
+            'medx360-services',
+            [$this->servicesAdmin, 'renderPage']
+        );
+
+        add_submenu_page(
+            'medx360',
+            __('Manage Locations', 'medx360'),
+            __('Locations', 'medx360'),
+            'manage_options',
+            'medx360-locations',
+            [$this->locationsAdmin, 'renderPage']
+        );
+
+        add_submenu_page(
+            'medx360',
+            __('Manage Providers', 'medx360'),
+            __('Providers', 'medx360'),
+            'manage_options',
+            'medx360-providers',
+            [$this->providersAdmin, 'renderPage']
+        );
+
+        add_submenu_page(
+            'medx360',
+            __('Manage Patients', 'medx360'),
+            __('Patients', 'medx360'),
+            'manage_options',
+            'medx360-patients',
+            [$this->patientsAdmin, 'renderPage']
+        );
+
+        add_submenu_page(
+            'medx360',
+            __('Manage Appointments', 'medx360'),
+            __('Appointments', 'medx360'),
+            'manage_options',
+            'medx360-appointments',
+            [$this->appointmentsAdmin, 'renderPage']
         );
 
         add_submenu_page(

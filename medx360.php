@@ -18,7 +18,8 @@ use MedX360\Infrastructure\Common\Container;
 use MedX360\Infrastructure\Routes\Routes;
 use MedX360\Infrastructure\WP\Admin\AdminMenu;
 use MedX360\Infrastructure\WP\Security\SecurityManager;
-use MedX360\Infrastructure\WP\Database\DatabaseManager;
+use MedX360\Infrastructure\Database\DatabaseManager;
+use MedX360\Infrastructure\Database\Activator;
 use MedX360\Infrastructure\WP\React\ReactManager;
 
 // Prevent direct access
@@ -73,7 +74,7 @@ class MedX360Plugin
         // Initialize core components
         $this->container = new \MedX360\Infrastructure\Common\Container();
         $this->reactManager = new \MedX360\Infrastructure\WP\React\ReactManager();
-        $this->databaseManager = new \MedX360\Infrastructure\WP\Database\DatabaseManager();
+        $this->databaseManager = new \MedX360\Infrastructure\Database\DatabaseManager();
         $this->adminMenu = new \MedX360\Infrastructure\WP\Admin\AdminMenu();
         // Temporarily comment out SecurityManager to debug
         // $this->securityManager = new \MedX360\Infrastructure\WP\Security\SecurityManager();
@@ -89,9 +90,9 @@ class MedX360Plugin
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdminAssets']);
 
         // Activation and deactivation hooks
-        register_activation_hook(__FILE__, [$this, 'activate']);
-        register_deactivation_hook(__FILE__, [$this, 'deactivate']);
-        register_uninstall_hook(__FILE__, [__CLASS__, 'uninstall']);
+        register_activation_hook(__FILE__, [Activator::class, 'activate']);
+        register_deactivation_hook(__FILE__, [Activator::class, 'deactivate']);
+        register_uninstall_hook(__FILE__, [Activator::class, 'uninstall']);
     }
 
     /**
@@ -102,8 +103,8 @@ class MedX360Plugin
         // Initialize React components
         $this->reactManager->init();
 
-        // Initialize database
-        $this->databaseManager->init();
+        // Database initialization is handled by activation hooks
+        // No need to call init() on DatabaseManager
 
         // Initialize security - temporarily commented out
         // $this->securityManager->init();
@@ -153,15 +154,8 @@ class MedX360Plugin
      */
     public function activate()
     {
-        // Create database tables
-        $this->databaseManager->createTables();
-
-        // Set default options
-        add_option('medx360_version', MEDX360_VERSION);
-        add_option('medx360_activated', true);
-
-        // Flush rewrite rules
-        flush_rewrite_rules();
+        // This method is now handled by Activator class
+        Activator::activate();
     }
 
     /**
@@ -169,8 +163,8 @@ class MedX360Plugin
      */
     public function deactivate()
     {
-        // Flush rewrite rules
-        flush_rewrite_rules();
+        // This method is now handled by Activator class
+        Activator::deactivate();
     }
 
     /**
@@ -178,14 +172,8 @@ class MedX360Plugin
      */
     public static function uninstall()
     {
-        // Remove database tables
-        $databaseManager = new DatabaseManager();
-        $databaseManager->dropTables();
-
-        // Remove options
-        delete_option('medx360_version');
-        delete_option('medx360_activated');
-        delete_option('medx360_db_version');
+        // This method is now handled by Activator class
+        Activator::uninstall();
     }
 }
 
