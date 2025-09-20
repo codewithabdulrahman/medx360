@@ -1,0 +1,426 @@
+/* Medx360 Modern Layout Styles */
+.medx360-layout {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  max-width: auto;
+  margin: 0 auto;
+}
+
+.medx360-content {
+  padding: 0;
+  background: transparent;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Modern Header Styles */
+.medx360-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 24px 32px;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.medx360-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+}
+
+.medx360-page-title {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.medx360-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.medx360-notification-btn,
+.medx360-profile-btn {
+  color: #1a1a1a;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.medx360-notification-btn:hover,
+.medx360-profile-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.medx360-notification-count {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 11px;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+/* Modern Navigation Tabs */
+.medx360-nav-tabs {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 0;
+  padding: 0 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.medx360-nav-tab {
+  padding: 18px 24px;
+  text-decoration: none;
+  color: #4a5568;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+.medx360-nav-tab:hover {
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.08);
+  transform: translateY(-1px);
+}
+
+.medx360-nav-tab.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  background: rgba(102, 126, 234, 0.12);
+}
+
+.medx360-nav-tab.paid {
+  opacity: 0.8;
+  position: relative;
+}
+
+.medx360-nav-tab.paid::after {
+  content: "PRO";
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  color: white;
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  margin-left: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+}
+
+.medx360-nav-icon {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.medx360-nav-tab:hover .medx360-nav-icon {
+  transform: scale(1.1);
+}
+
+/* Modern Navigation Component */
+.medx360-navigation {
+  background: transparent;
+  margin: 0;
+  padding: 0;
+}
+
+/* Modern Epic Sections */
+.medx360-epic-section {
+  margin: 40px 0;
+  padding: 0 32px;
+}
+
+.medx360-epic-section h3 {
+  margin: 0 0 32px 0;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 700;
+  padding-bottom: 16px;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.medx360-epic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.medx360-epic-item {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-decoration: none;
+  color: #1a1a1a;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 180px;
+  overflow: hidden;
+}
+
+.medx360-epic-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.medx360-epic-item:hover::before {
+  transform: scaleX(1);
+}
+
+.medx360-epic-item:hover {
+  border-color: rgba(102, 126, 234, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 1);
+}
+
+.medx360-epic-item.paid {
+  border-color: rgba(243, 156, 18, 0.4);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 249, 230, 0.95) 100%);
+}
+
+.medx360-epic-item.paid::before {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.medx360-epic-item.paid:hover {
+  border-color: rgba(230, 126, 34, 0.6);
+  box-shadow: 0 20px 40px rgba(243, 156, 18, 0.2);
+}
+
+.medx360-epic-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  display: block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: transform 0.3s ease;
+}
+
+.medx360-epic-item:hover .medx360-epic-icon {
+  transform: scale(1.1);
+}
+
+.medx360-epic-item.paid .medx360-epic-icon {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.medx360-epic-title {
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #1a1a1a;
+}
+
+.medx360-epic-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.medx360-epic-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 11px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.medx360-epic-badge.paid {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+}
+
+/* Modern Responsive Design */
+@media (max-width: 1024px) {
+  .medx360-epic-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .medx360-epic-section {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .medx360-layout {
+    margin: 0;
+  }
+  
+  .medx360-content {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .medx360-header {
+    margin: 0;
+    padding: 20px 24px;
+  }
+  
+  .medx360-nav-tabs {
+    margin: 0;
+    padding: 0 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .medx360-nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .medx360-epic-section {
+    padding: 0 24px;
+    margin: 32px 0;
+  }
+  
+  .medx360-page-title {
+    font-size: 28px;
+  }
+  
+  .medx360-epic-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .medx360-nav-tab {
+    padding: 16px 20px;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  
+  .medx360-epic-item {
+    padding: 28px 20px;
+    min-height: 160px;
+  }
+  
+  .medx360-epic-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+  
+  .medx360-epic-title {
+    font-size: 16px;
+  }
+  
+  .medx360-epic-description {
+    font-size: 13px;
+  }
+  
+  .medx360-header-actions {
+    gap: 12px;
+  }
+  
+  .medx360-notification-btn,
+  .medx360-profile-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .medx360-header {
+    padding: 16px 20px;
+  }
+  
+  .medx360-page-title {
+    font-size: 24px;
+  }
+  
+  .medx360-nav-tabs {
+    padding: 0 20px;
+  }
+  
+  .medx360-nav-tab {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+  
+  .medx360-epic-section {
+    padding: 0 20px;
+  }
+  
+  .medx360-epic-item {
+    padding: 24px 16px;
+    min-height: 140px;
+  }
+  
+  .medx360-epic-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+  
+  .medx360-epic-title {
+    font-size: 15px;
+  }
+  
+  .medx360-epic-description {
+    font-size: 12px;
+  }
+}

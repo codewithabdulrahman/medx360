@@ -1,0 +1,418 @@
+/* Modern Dashboard Styles */
+.medx360-dashboard {
+  padding: 32px;
+  max-width: 100%;
+}
+
+.medx360-dashboard-header {
+  margin-bottom: 48px;
+  text-align: left;
+}
+
+.medx360-dashboard-header h2 {
+  margin: 0 0 16px 0;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 36px;
+  font-weight: 800;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.medx360-dashboard-header p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* Modern Stats Grid */
+.medx360-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+  margin-bottom: 48px;
+}
+
+.medx360-stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 32px 28px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.medx360-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.medx360-stat-card:hover::before {
+  transform: scaleX(1);
+}
+
+.medx360-stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 1);
+}
+
+.medx360-stat-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: white;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.medx360-stat-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+
+.medx360-stat-content p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Modern Dashboard Content */
+.medx360-dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.medx360-dashboard-section {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 36px 32px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.medx360-dashboard-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.medx360-dashboard-section h3 {
+  margin: 0 0 32px 0;
+  color: #1a1a1a;
+  font-size: 24px;
+  font-weight: 700;
+  border-bottom: 3px solid rgba(102, 126, 234, 0.2);
+  padding-bottom: 16px;
+}
+
+/* Modern Quick Actions */
+.medx360-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.medx360-quick-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px;
+  text-decoration: none;
+  color: #1a1a1a;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.medx360-quick-action::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.medx360-quick-action:hover::before {
+  transform: scaleX(1);
+}
+
+.medx360-quick-action:hover {
+  border-color: rgba(102, 126, 234, 0.4);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 1);
+}
+
+.medx360-quick-action-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.medx360-quick-action span {
+  font-weight: 700;
+  text-align: center;
+  font-size: 15px;
+}
+
+/* Modern Activities */
+.medx360-activities {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.medx360-activity {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.medx360-activity:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateX(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.medx360-activity-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.medx360-activity-booking {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+}
+
+.medx360-activity-payment {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.medx360-activity-patient {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.medx360-activity-staff {
+  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+}
+
+.medx360-activity-content p {
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.medx360-activity-time {
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Modern Responsive Design */
+@media (max-width: 1024px) {
+  .medx360-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  
+  .medx360-dashboard {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .medx360-dashboard-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  
+  .medx360-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .medx360-quick-actions {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .medx360-dashboard-section {
+    padding: 28px 24px;
+  }
+  
+  .medx360-dashboard-header h2 {
+    font-size: 32px;
+  }
+  
+  .medx360-dashboard-header p {
+    font-size: 18px;
+  }
+  
+  .medx360-stat-card {
+    padding: 28px 24px;
+  }
+  
+  .medx360-stat-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 28px;
+  }
+  
+  .medx360-stat-content h3 {
+    font-size: 28px;
+  }
+  
+  .medx360-quick-action {
+    padding: 28px 20px;
+  }
+  
+  .medx360-quick-action-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+  
+  .medx360-activity {
+    padding: 20px;
+    gap: 16px;
+  }
+  
+  .medx360-activity-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .medx360-dashboard {
+    padding: 20px;
+  }
+  
+  .medx360-dashboard-header h2 {
+    font-size: 28px;
+  }
+  
+  .medx360-dashboard-header p {
+    font-size: 16px;
+  }
+  
+  .medx360-stat-card {
+    padding: 24px 20px;
+    gap: 20px;
+  }
+  
+  .medx360-stat-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+  
+  .medx360-stat-content h3 {
+    font-size: 24px;
+  }
+  
+  .medx360-dashboard-section {
+    padding: 24px 20px;
+  }
+  
+  .medx360-dashboard-section h3 {
+    font-size: 20px;
+  }
+  
+  .medx360-quick-action {
+    padding: 24px 16px;
+  }
+  
+  .medx360-quick-action-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+  
+  .medx360-quick-action span {
+    font-size: 14px;
+  }
+  
+  .medx360-activity {
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  .medx360-activity-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+  
+  .medx360-activity-content p {
+    font-size: 14px;
+  }
+  
+  .medx360-activity-time {
+    font-size: 12px;
+  }
+}
