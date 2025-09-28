@@ -1,307 +1,220 @@
-# MedX360 Frontend
+# MedX360 React Frontend
 
-A modern React TypeScript frontend for the MedX360 Medical Booking Management System, built to integrate seamlessly with WordPress REST APIs.
+This is the React frontend for the MedX360 WordPress plugin. It provides a modern, responsive interface for managing medical bookings, clinics, hospitals, doctors, and more.
 
 ## Features
 
-### 🏥 **Comprehensive Medical Management**
-- **Clinic Management**: Create and manage multiple medical clinics
-- **Hospital Management**: Organize hospitals under clinics
-- **Doctor Management**: Manage medical staff with specializations and schedules
-- **Service Management**: Define medical services with pricing and duration
-- **Staff Management**: Manage non-medical staff members
-- **Booking System**: Complete appointment booking and management
-- **Payment Processing**: Handle payments and refunds
-- **Consultation Management**: Track patient consultations and medical records
+- **Modern React 18** with hooks and functional components
+- **React Router** for client-side routing
+- **React Query** for efficient data fetching and caching
+- **Tailwind CSS** for styling with custom design system
+- **Webpack 5** for bundling and development server
+- **Hot Module Replacement** for fast development
+- **Responsive Design** that works on all devices
+- **WordPress Integration** via REST API
 
-### 🎨 **Modern UI/UX**
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
-- **Clean Interface**: Intuitive and user-friendly design
-- **Dark Mode Support**: Automatic theme switching
-- **Accessibility**: WCAG compliant components
-- **Loading States**: Smooth loading indicators and error handling
-
-### 🔧 **Technical Features**
-- **TypeScript**: Full type safety and better development experience
-- **React Query**: Efficient data fetching and caching
-- **Context API**: Centralized state management
-- **React Router**: Client-side routing
-- **Form Validation**: Comprehensive form handling with react-hook-form
-- **Toast Notifications**: User feedback with react-hot-toast
-- **Icon System**: Beautiful icons with Lucide React
-
-## Tech Stack
-
-- **React 18** - Modern React with hooks and concurrent features
-- **TypeScript** - Type-safe JavaScript
-- **React Query** - Data fetching and state management
-- **React Router** - Client-side routing
-- **React Hook Form** - Form handling and validation
-- **React Hot Toast** - Toast notifications
-- **Lucide React** - Beautiful icons
-- **Tailwind CSS** - Utility-first CSS framework
-- **Axios** - HTTP client for API requests
-
-## Project Structure
-
-```
-src/
-├── components/          # Reusable UI components
-│   ├── Layout.tsx      # Main layout wrapper
-│   ├── Sidebar.tsx     # Navigation sidebar
-│   ├── Header.tsx      # Top header bar
-│   └── OnboardingWizard.tsx # Setup wizard
-├── pages/              # Page components
-│   ├── Dashboard.tsx   # Main dashboard
-│   ├── Clinics.tsx     # Clinic management
-│   ├── Doctors.tsx     # Doctor management
-│   ├── Bookings.tsx    # Booking management
-│   └── ...             # Other pages
-├── hooks/              # Custom React hooks
-│   └── useApi.ts       # API integration hooks
-├── services/           # API services
-│   └── api.ts          # WordPress REST API client
-├── contexts/           # React Context providers
-│   └── AppContext.tsx  # Global app state
-├── types/              # TypeScript type definitions
-│   └── index.ts        # All type definitions
-├── utils/              # Utility functions
-│   └── index.ts        # Helper functions
-└── App.tsx            # Main app component
-```
-
-## Getting Started
+## Quick Start
 
 ### Prerequisites
 
 - Node.js 16+ 
-- npm or yarn
-- WordPress site with MedX360 plugin installed
+- npm 8+
+- WordPress with MedX360 plugin installed
 
 ### Installation
 
-1. **Navigate to frontend directory**
-   ```bash
-   cd wp-content/plugins/medx360/frontend
-   ```
+1. Navigate to the frontend directory:
+```bash
+cd wp-content/plugins/medx360/frontend
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+2. Install dependencies:
+```bash
+npm install
+```
 
-3. **Configure environment**
-   Create a `.env` file in the frontend directory:
-   ```env
-   REACT_APP_WP_URL=http://localhost:3000
-   REACT_APP_WP_NONCE=your-wordpress-nonce
-   ```
+### Development Commands
 
-4. **Start development server**
-   ```bash
-   npm start
-   ```
+#### Start Development Server
+```bash
+npm run dev
+```
+- Starts webpack dev server on `http://localhost:3000`
+- Hot module replacement enabled
+- Source maps for debugging
+- Watches for file changes
 
-5. **Open in browser**
-   Navigate to `http://localhost:3000`
+#### Build for Development
+```bash
+npm run build:dev
+```
+- Creates development build in `dist/` folder
+- Includes source maps
+- Faster build time
 
-### Building for Production
+#### Watch Mode
+```bash
+npm run watch
+```
+- Builds files and watches for changes
+- Rebuilds automatically on file changes
+- No dev server (for production-like testing)
 
+### Production Commands
+
+#### Build for Production
 ```bash
 npm run build
 ```
+- Creates optimized production build
+- Minifies JavaScript and CSS
+- Generates content hashes for caching
+- Removes development code
 
-This creates a `build` folder with optimized production files.
+#### Clean Build Directory
+```bash
+npm run clean
+```
+- Removes the `dist/` directory
+- Use before fresh builds
 
-## API Integration
+## Project Structure
 
-The frontend integrates with WordPress REST APIs through:
+```
+frontend/
+├── src/
+│   ├── components/          # Reusable React components
+│   │   ├── Layout.js       # Main layout wrapper
+│   │   ├── Sidebar.js      # Navigation sidebar
+│   │   └── Header.js       # Top header bar
+│   ├── pages/              # Page components
+│   │   ├── Dashboard.js    # Main dashboard
+│   │   ├── Onboarding.js   # Setup wizard
+│   │   └── index.js        # Page exports
+│   ├── hooks/              # Custom React hooks
+│   │   └── useApi.js       # API integration hooks
+│   ├── services/           # API services
+│   │   └── apiService.js   # Axios-based API client
+│   ├── App.js              # Main app component
+│   ├── index.js            # App entry point
+│   ├── index.css           # Global styles
+│   └── index.html          # HTML template
+├── dist/                   # Built files (generated)
+├── package.json            # Dependencies and scripts
+├── webpack.config.js       # Webpack configuration
+├── tailwind.config.js     # Tailwind CSS config
+└── postcss.config.js      # PostCSS configuration
+```
 
-### **API Service Layer** (`services/api.ts`)
-- Centralized API client using Axios
-- Automatic nonce authentication
-- Error handling and response formatting
-- Type-safe API methods
+## Development Workflow
 
-### **React Query Hooks** (`hooks/useApi.ts`)
-- Efficient data fetching and caching
-- Optimistic updates
-- Background refetching
-- Error handling with toast notifications
+### 1. Start Development
+```bash
+npm run dev
+```
+This will:
+- Start webpack dev server on port 3000
+- Enable hot module replacement
+- Watch for file changes
+- Provide source maps for debugging
 
-### **Available Endpoints**
-- `GET/POST/PUT/DELETE /clinics` - Clinic management
-- `GET/POST/PUT/DELETE /hospitals` - Hospital management
-- `GET/POST/PUT/DELETE /doctors` - Doctor management
-- `GET/POST/PUT/DELETE /services` - Service management
-- `GET/POST/PUT/DELETE /staff` - Staff management
-- `GET/POST/PUT/DELETE /bookings` - Booking management
-- `GET/POST/PUT/DELETE /consultations` - Consultation management
-- `GET/POST/PUT/DELETE /payments` - Payment management
-- `GET/POST /onboarding/*` - Onboarding wizard
-- `GET/POST /settings` - System settings
+### 2. Make Changes
+- Edit files in `src/` directory
+- Changes will automatically reload in browser
+- Use React Developer Tools for debugging
 
-## State Management
+### 3. Test Production Build
+```bash
+npm run build
+```
+This creates optimized files in `dist/` folder that WordPress will serve.
 
-### **Context API** (`contexts/AppContext.tsx`)
-- Global application state
-- User authentication status
-- Current clinic/doctor selection
-- UI state (sidebar, theme, loading)
-- Onboarding status
+### 4. Deploy
+- Run `npm run build` to create production files
+- The `dist/` folder contains the built frontend
+- WordPress plugin will automatically serve these files
 
-### **React Query**
-- Server state management
-- Caching and synchronization
-- Background updates
-- Optimistic updates
+## WordPress Integration
 
-## Components
+The React frontend integrates with WordPress through:
 
-### **Layout Components**
-- `Layout` - Main app wrapper with sidebar and header
-- `Sidebar` - Collapsible navigation sidebar
-- `Header` - Top header with search and user menu
+1. **REST API**: All data operations use WordPress REST API endpoints
+2. **Authentication**: Uses WordPress nonce authentication
+3. **User Context**: Receives current user data from WordPress
+4. **Admin Interface**: Loads within WordPress admin area
 
-### **Feature Components**
-- `OnboardingWizard` - Step-by-step setup process
-- `Dashboard` - Main dashboard with statistics
-- Page components for each feature area
+### API Endpoints
 
-### **UI Components**
-- Responsive cards and grids
-- Form components with validation
-- Loading states and error handling
-- Toast notifications
-- Status badges and indicators
+The frontend communicates with these WordPress REST API endpoints:
+
+- `GET /wp-json/medx360/v1/clinics` - List clinics
+- `POST /wp-json/medx360/v1/clinics` - Create clinic
+- `GET /wp-json/medx360/v1/hospitals` - List hospitals
+- `GET /wp-json/medx360/v1/doctors` - List doctors
+- `GET /wp-json/medx360/v1/bookings` - List bookings
+- `GET /wp-json/medx360/v1/onboarding/status` - Setup status
+- And many more...
 
 ## Styling
 
-### **Tailwind CSS**
-- Utility-first CSS framework
-- Responsive design system
-- Dark mode support
-- Custom color palette
+The project uses **Tailwind CSS** with a custom design system:
 
-### **Custom Styles** (`App.css`)
-- Base styles and resets
-- Component-specific styles
-- Print styles
-- Responsive utilities
+- **Primary Colors**: Blue palette for main actions
+- **Secondary Colors**: Green palette for success states
+- **Typography**: Inter font family
+- **Components**: Pre-built component classes
+- **Responsive**: Mobile-first design approach
 
-## Form Handling
+### Custom CSS Classes
 
-### **React Hook Form**
-- Performant form handling
-- Built-in validation
-- Error state management
-- Type-safe form data
+```css
+.btn-primary     /* Primary button styling */
+.btn-secondary   /* Secondary button styling */
+.card           /* Card container */
+.form-input     /* Form input styling */
+.table          /* Table styling */
+.badge-success  /* Success badge */
+```
 
-### **Validation**
-- Email and phone validation
-- Required field validation
-- Custom validation rules
-- Real-time error feedback
+## State Management
 
-## Error Handling
+The app uses **React Query** for server state management:
 
-### **API Errors**
-- Centralized error handling
-- User-friendly error messages
-- Toast notifications
-- Retry mechanisms
+- **Caching**: Automatic caching of API responses
+- **Background Updates**: Refetch data when needed
+- **Optimistic Updates**: Update UI before server response
+- **Error Handling**: Centralized error management
 
-### **Form Errors**
-- Field-level validation
-- Real-time feedback
-- Error state styling
-- Accessibility support
+## Browser Support
 
-## Responsive Design
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
 
-### **Breakpoints**
-- Mobile: < 768px
-- Tablet: 768px - 1024px
-- Desktop: > 1024px
+## Troubleshooting
 
-### **Mobile Features**
-- Collapsible sidebar
-- Touch-friendly interfaces
-- Optimized layouts
-- Mobile navigation
+### Common Issues
 
-## Accessibility
+1. **Build fails**: Check Node.js version (16+ required)
+2. **Hot reload not working**: Restart dev server
+3. **API errors**: Check WordPress plugin is active
+4. **Styling issues**: Clear browser cache
 
-### **WCAG Compliance**
-- Keyboard navigation
-- Screen reader support
-- Color contrast compliance
-- Focus management
+### Debug Mode
 
-### **ARIA Labels**
-- Proper labeling
-- Role attributes
-- Live regions
-- Descriptive text
-
-## Performance
-
-### **Optimization**
-- Code splitting
-- Lazy loading
-- Image optimization
-- Bundle analysis
-
-### **Caching**
-- React Query caching
-- Browser caching
-- Service worker (PWA)
-- Offline support
-
-## Development
-
-### **Scripts**
-- `npm start` - Development server
-- `npm run build` - Production build
-- `npm test` - Run tests
-- `npm run eject` - Eject from Create React App
-
-### **Code Quality**
-- TypeScript strict mode
-- ESLint configuration
-- Prettier formatting
-- Husky git hooks
-
-## Deployment
-
-### **Production Build**
-1. Run `npm run build`
-2. Upload `build` folder to web server
-3. Configure web server for SPA routing
-4. Set up environment variables
-
-### **WordPress Integration**
-1. Enqueue React build files in WordPress
-2. Pass nonce and API URLs to frontend
-3. Handle routing for SPA
-4. Configure CORS if needed
+Enable debug mode by setting `NODE_ENV=development`:
+```bash
+NODE_ENV=development npm run dev
+```
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+1. Make changes in `src/` directory
+2. Test with `npm run dev`
+3. Build with `npm run build`
+4. Test production build in WordPress
 
 ## License
 
-GPL v2 or later - Same as WordPress
-
-## Support
-
-For support and feature requests, please contact the development team.
-
----
-
-**MedX360 Frontend** - Modern, responsive, and feature-rich medical booking management interface! 🏥✨
+GPL v2 or later (same as WordPress)
