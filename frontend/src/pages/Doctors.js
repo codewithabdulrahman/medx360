@@ -34,7 +34,6 @@ import {
 } from '@components/forms';
 import Modal from '@components/Modal';
 import ConfirmationModal from '@components/ConfirmationModal';
-import { useToastContext } from '@components/ToastContext';
 
 const DoctorCard = ({ doctor, onEdit, onDelete, onView }) => {
   const statusColors = {
@@ -412,7 +411,6 @@ const Doctors = () => {
   const createDoctorMutation = useCreateDoctor();
   const updateDoctorMutation = useUpdateDoctor();
   const deleteDoctorMutation = useDeleteDoctor();
-  const toast = useToastContext();
 
   const doctors = doctorsResponse?.data || [];
   const clinics = clinicsResponse?.data || [];
@@ -446,12 +444,12 @@ const Doctors = () => {
     
     try {
       await deleteDoctorMutation.mutateAsync(doctorToDelete.id);
-      toast.success('Success', 'Doctor deleted successfully');
+('Success', 'Doctor deleted successfully');
       setShowDeleteConfirm(false);
       setDoctorToDelete(null);
     } catch (error) {
       console.error('Failed to delete doctor:', error);
-      toast.error('Error', 'Failed to delete doctor. Please try again.');
+('Error', 'Failed to delete doctor. Please try again.');
     }
   };
 
@@ -462,7 +460,7 @@ const Doctors = () => {
 
   const handleView = (doctor) => {
     // TODO: Implement view details modal
-    toast.info('Info', `Viewing doctor: ${doctor.first_name} ${doctor.last_name}`);
+('Info', `Viewing doctor: ${doctor.first_name} ${doctor.last_name}`);
   };
 
   const handleSave = async (formData) => {
@@ -472,10 +470,10 @@ const Doctors = () => {
           id: editingDoctor.id, 
           data: formData 
         });
-        toast.success('Success', 'Doctor updated successfully');
+('Success', 'Doctor updated successfully');
       } else {
         await createDoctorMutation.mutateAsync(formData);
-        toast.success('Success', 'Doctor created successfully');
+('Success', 'Doctor created successfully');
       }
       setShowForm(false);
       setEditingDoctor(null);
@@ -484,9 +482,9 @@ const Doctors = () => {
       
       // Show detailed validation errors if available
       if (error.message && error.message !== 'Request failed') {
-        toast.error('Validation Error', error.message);
+('Validation Error', error.message);
       } else {
-        toast.error('Error', 'Failed to save doctor. Please try again.');
+('Error', 'Failed to save doctor. Please try again.');
       }
     }
   };

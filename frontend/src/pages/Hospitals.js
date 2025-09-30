@@ -25,7 +25,6 @@ import {
 } from '@components/forms';
 import Modal from '@components/Modal';
 import ConfirmationModal from '@components/ConfirmationModal';
-import { useToastContext } from '@components/ToastContext';
 
 const HospitalCard = ({ hospital, onEdit, onDelete, onView }) => {
   const statusColors = {
@@ -382,7 +381,6 @@ const Hospitals = () => {
   const createHospitalMutation = useCreateHospital();
   const updateHospitalMutation = useUpdateHospital();
   const deleteHospitalMutation = useDeleteHospital();
-  const toast = useToastContext();
 
   const hospitals = hospitalsResponse?.data || [];
   const clinics = clinicsResponse?.data || [];
@@ -411,12 +409,12 @@ const Hospitals = () => {
     
     try {
       await deleteHospitalMutation.mutateAsync(hospitalToDelete.id);
-      toast.success('Success', 'Hospital deleted successfully');
+('Success', 'Hospital deleted successfully');
       setShowDeleteConfirm(false);
       setHospitalToDelete(null);
     } catch (error) {
       console.error('Failed to delete hospital:', error);
-      toast.error('Error', 'Failed to delete hospital. Please try again.');
+('Error', 'Failed to delete hospital. Please try again.');
     }
   };
 
@@ -427,7 +425,7 @@ const Hospitals = () => {
 
   const handleView = (hospital) => {
     // TODO: Implement view details modal
-    toast.info('Info', `Viewing hospital: ${hospital.name}`);
+('Info', `Viewing hospital: ${hospital.name}`);
   };
 
   const handleSave = async (formData) => {
@@ -437,10 +435,10 @@ const Hospitals = () => {
           id: editingHospital.id, 
           data: formData 
         });
-        toast.success('Success', 'Hospital updated successfully');
+('Success', 'Hospital updated successfully');
       } else {
         await createHospitalMutation.mutateAsync(formData);
-        toast.success('Success', 'Hospital created successfully');
+('Success', 'Hospital created successfully');
       }
       setShowForm(false);
       setEditingHospital(null);
@@ -449,9 +447,9 @@ const Hospitals = () => {
       
       // Show detailed validation errors if available
       if (error.message && error.message !== 'Request failed') {
-        toast.error('Validation Error', error.message);
+('Validation Error', error.message);
       } else {
-        toast.error('Error', 'Failed to save hospital. Please try again.');
+('Error', 'Failed to save hospital. Please try again.');
       }
     }
   };

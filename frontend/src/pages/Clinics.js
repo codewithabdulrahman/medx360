@@ -401,12 +401,10 @@ const Clinics = () => {
     
     try {
       await deleteClinicMutation.mutateAsync(clinicToDelete.id);
-      toast.success('Success', 'Clinic deleted successfully');
       setShowDeleteConfirm(false);
       setClinicToDelete(null);
     } catch (error) {
       console.error('Failed to delete clinic:', error);
-      toast.error('Error', 'Failed to delete clinic. Please try again.');
     }
   };
 
@@ -441,7 +439,6 @@ const Clinics = () => {
       
       // Set submit error to display in form
       if (error.message && error.message !== 'Request failed') {
-        // Pass error to form component
         setSubmitError(error.message);
       } else {
         setSubmitError('Failed to save clinic. Please try again.');

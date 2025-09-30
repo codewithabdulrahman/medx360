@@ -32,7 +32,6 @@ import {
 } from '@components/forms';
 import Modal from '@components/Modal';
 import ConfirmationModal from '@components/ConfirmationModal';
-import { useToastContext } from '@components/ToastContext';
 
 const ServiceCard = ({ service, onEdit, onDelete, onView }) => {
   const statusColors = {
@@ -342,7 +341,6 @@ const Services = () => {
   const createServiceMutation = useCreateService();
   const updateServiceMutation = useUpdateService();
   const deleteServiceMutation = useDeleteService();
-  const toast = useToastContext();
 
   const services = servicesResponse?.data || [];
   const clinics = clinicsResponse?.data || [];
@@ -375,12 +373,10 @@ const Services = () => {
     
     try {
       await deleteServiceMutation.mutateAsync(serviceToDelete.id);
-      toast.success('Success', 'Service deleted successfully');
       setShowDeleteConfirm(false);
       setServiceToDelete(null);
     } catch (error) {
       console.error('Failed to delete service:', error);
-      toast.error('Error', 'Failed to delete service. Please try again.');
     }
   };
 
@@ -391,7 +387,7 @@ const Services = () => {
 
   const handleView = (service) => {
     // TODO: Implement view details modal
-    toast.info('Info', `Viewing service: ${service.name}`);
+    alert(`Viewing service: ${service.name}`);
   };
 
   const handleSave = async (formData) => {
@@ -401,10 +397,8 @@ const Services = () => {
           id: editingService.id, 
           data: formData 
         });
-        toast.success('Success', 'Service updated successfully');
       } else {
         await createServiceMutation.mutateAsync(formData);
-        toast.success('Success', 'Service created successfully');
       }
       setShowForm(false);
       setEditingService(null);
@@ -413,9 +407,7 @@ const Services = () => {
       
       // Show detailed validation errors if available
       if (error.message && error.message !== 'Request failed') {
-        toast.error('Validation Error', error.message);
       } else {
-        toast.error('Error', 'Failed to save service. Please try again.');
       }
     }
   };
