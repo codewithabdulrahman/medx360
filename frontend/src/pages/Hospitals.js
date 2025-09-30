@@ -121,7 +121,8 @@ const HospitalCard = ({ hospital, onEdit, onDelete, onView }) => {
 };
 
 const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
-  const { data: clinics } = useClinics();
+  const { data: clinicsData } = useClinics();
+  const clinics = clinicsData?.data || [];
   
   const [formData, setFormData] = useState({
     clinic_id: hospital?.clinic_id || '',
@@ -196,10 +197,10 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
 
   if (!isOpen) return null;
 
-  const clinicOptions = clinics?.map(clinic => ({
+  const clinicOptions = clinics.map(clinic => ({
     value: clinic.id,
     label: clinic.name
-  })) || [];
+  }));
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
@@ -472,10 +473,10 @@ const Hospitals = () => {
     );
   }
 
-  const clinicOptions = clinics?.map(clinic => ({
+  const clinicOptions = clinics.map(clinic => ({
     value: clinic.id,
     label: clinic.name
-  })) || [];
+  }));
 
   return (
     <div className="space-y-6">
