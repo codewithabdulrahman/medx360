@@ -25,7 +25,7 @@ const getWPData = () => {
   
   // Fallback for development or if data not available
   return Promise.resolve({
-    api_url: '/wp-json/medx360/v1/',
+    ajax_url: window.location.origin + '/wp-admin/admin-ajax.php',
     nonce: '',
     user: null,
     strings: {

@@ -29,15 +29,12 @@ class MedX360_AJAX_Controller {
     protected function register_ajax_action($action, $callback, $require_auth = true) {
         $full_action = $this->action_prefix . $action;
         
-        if ($require_auth) {
-            add_action('wp_ajax_' . $full_action, $callback);
-        } else {
-            add_action('wp_ajax_nopriv_' . $full_action, $callback);
-        }
+        // Always register for logged-in users
+        add_action('wp_ajax_' . $full_action, $callback);
         
-        // Also register for logged-in users if not requiring auth
+        // Register for non-logged-in users if auth not required
         if (!$require_auth) {
-            add_action('wp_ajax_' . $full_action, $callback);
+            add_action('wp_ajax_nopriv_' . $full_action, $callback);
         }
     }
     
@@ -59,9 +56,8 @@ class MedX360_AJAX_Controller {
      * Get pagination parameters from request
      */
     protected function get_pagination_params() {
-        $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
-        $per_page = isset($_POST['per_page']) ? intval($_POST['per_page']) : 10;
-        $per_page = min($per_page, 100); // Limit to 100 items per page
+        $page = max(1, intval($_POST['page'] ?? 1));
+        $per_page = min(100, max(1, intval($_POST['per_page'] ?? 10)));
         
         return array(
             'page' => $page,
@@ -75,9 +71,9 @@ class MedX360_AJAX_Controller {
      */
     protected function get_search_params() {
         return array(
-            'search' => isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '',
-            'orderby' => isset($_POST['orderby']) ? sanitize_text_field($_POST['orderby']) : 'id',
-            'order' => isset($_POST['order']) ? sanitize_text_field($_POST['order']) : 'DESC'
+            'search' => sanitize_text_field($_POST['search'] ?? ''),
+            'orderby' => sanitize_text_field($_POST['orderby'] ?? 'id'),
+            'order' => in_array(strtoupper($_POST['order'] ?? 'DESC'), ['ASC', 'DESC']) ? strtoupper($_POST['order']) : 'DESC'
         );
     }
     
@@ -88,16 +84,16 @@ class MedX360_AJAX_Controller {
         $filters = array();
         
         // Common filters
-        if (isset($_POST['status']) && !empty($_POST['status'])) {
+        if (!empty($_POST['status'])) {
             $filters['status'] = sanitize_text_field($_POST['status']);
         }
         
-        if (isset($_POST['clinic_id']) && !empty($_POST['clinic_id'])) {
-            $filters['clinic_id'] = intval($_POST['clinic_id']);
+        if (!empty($_POST['clinic_id'])) {
+            $filters['clinic_id'] = max(0, intval($_POST['clinic_id']));
         }
         
-        if (isset($_POST['hospital_id']) && !empty($_POST['hospital_id'])) {
-            $filters['hospital_id'] = intval($_POST['hospital_id']);
+        if (!empty($_POST['hospital_id'])) {
+            $filters['hospital_id'] = max(0, intval($_POST['hospital_id']));
         }
         
         return $filters;
@@ -114,6 +110,14 @@ class MedX360_AJAX_Controller {
      * Format error response
      */
     protected function format_error_response($message, $code = 'error', $status_code = 400) {
+        // Log the error
+        MedX360_Logger::error("AJAX Error: {$message}", array(
+            'code' => $code,
+            'status_code' => $status_code,
+            'action' => $_POST['action'] ?? 'unknown',
+            'user_id' => get_current_user_id()
+        ));
+        
         wp_send_json_error(array(
             'code' => $code,
             'message' => $message,
@@ -254,9 +258,19 @@ class MedX360_AJAX_Controller {
      */
     protected function verify_nonce($nonce = null) {
         if ($nonce === null) {
-            $nonce = isset($_POST['nonce']) ? $_POST['nonce'] : '';
+            $nonce = $_POST['nonce'] ?? '';
         }
         
-        return wp_verify_nonce($nonce, 'medx360_ajax');
+        $is_valid = wp_verify_nonce($nonce, 'medx360_ajax');
+        
+        if (!$is_valid) {
+            MedX360_Logger::log_security('Invalid nonce', array(
+                'action' => $_POST['action'] ?? 'unknown',
+                'nonce' => $nonce,
+                'user_id' => get_current_user_id()
+            ));
+        }
+        
+        return $is_valid;
     }
 }

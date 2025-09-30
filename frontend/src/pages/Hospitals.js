@@ -23,6 +23,9 @@ import {
   FormSelect,
   FormTextarea 
 } from '@components/forms';
+import Modal from '@components/Modal';
+import ConfirmationModal from '@components/ConfirmationModal';
+import { useToastContext } from '@components/ToastContext';
 
 const HospitalCard = ({ hospital, onEdit, onDelete, onView }) => {
   const statusColors = {
@@ -305,7 +308,7 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
                 value={formData.website}
                 onChange={(e) => handleChange('website', e.target.value)}
                 error={errors.website}
-                placeholder="https://example.com"
+                placeholder="example.com (https:// will be added automatically)"
               />
               
               <FormInput
@@ -371,20 +374,23 @@ const Hospitals = () => {
   const [clinicFilter, setClinicFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingHospital, setEditingHospital] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [hospitalToDelete, setHospitalToDelete] = useState(null);
 
   const { data: hospitalsResponse, isLoading, error } = useHospitals();
   const { data: clinicsResponse } = useClinics();
   const createHospitalMutation = useCreateHospital();
   const updateHospitalMutation = useUpdateHospital();
   const deleteHospitalMutation = useDeleteHospital();
+  const toast = useToastContext();
 
   const hospitals = hospitalsResponse?.data || [];
   const clinics = clinicsResponse?.data || [];
 
   const filteredHospitals = hospitals.filter(hospital => {
-    const matchesSearch = hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         hospital.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         hospital.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (hospital.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+                         (hospital.city?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+                         (hospital.email?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     const matchesStatus = !statusFilter || hospital.status === statusFilter;
     const matchesClinic = !clinicFilter || hospital.clinic_id === parseInt(clinicFilter);
     return matchesSearch && matchesStatus && matchesClinic;
@@ -395,19 +401,33 @@ const Hospitals = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (hospital) => {
-    if (window.confirm(`Are you sure you want to delete "${hospital.name}"?`)) {
-      try {
-        await deleteHospitalMutation.mutateAsync(hospital.id);
-      } catch (error) {
-        console.error('Failed to delete hospital:', error);
-      }
+  const handleDelete = (hospital) => {
+    setHospitalToDelete(hospital);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!hospitalToDelete) return;
+    
+    try {
+      await deleteHospitalMutation.mutateAsync(hospitalToDelete.id);
+      toast.success('Success', 'Hospital deleted successfully');
+      setShowDeleteConfirm(false);
+      setHospitalToDelete(null);
+    } catch (error) {
+      console.error('Failed to delete hospital:', error);
+      toast.error('Error', 'Failed to delete hospital. Please try again.');
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setHospitalToDelete(null);
   };
 
   const handleView = (hospital) => {
     // TODO: Implement view details modal
-    console.log('View hospital:', hospital);
+    toast.info('Info', `Viewing hospital: ${hospital.name}`);
   };
 
   const handleSave = async (formData) => {
@@ -417,13 +437,22 @@ const Hospitals = () => {
           id: editingHospital.id, 
           data: formData 
         });
+        toast.success('Success', 'Hospital updated successfully');
       } else {
         await createHospitalMutation.mutateAsync(formData);
+        toast.success('Success', 'Hospital created successfully');
       }
       setShowForm(false);
       setEditingHospital(null);
     } catch (error) {
       console.error('Failed to save hospital:', error);
+      
+      // Show detailed validation errors if available
+      if (error.message && error.message !== 'Request failed') {
+        toast.error('Validation Error', error.message);
+      } else {
+        toast.error('Error', 'Failed to save hospital. Please try again.');
+      }
     }
   };
 
@@ -542,6 +571,19 @@ const Hospitals = () => {
         onCancel={handleCancel}
         isOpen={showForm}
         isLoading={createHospitalMutation.isLoading || updateHospitalMutation.isLoading}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        title="Delete Hospital"
+        message={`Are you sure you want to delete "${hospitalToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={deleteHospitalMutation.isLoading}
       />
     </div>
   );

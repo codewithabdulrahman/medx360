@@ -1,6 +1,6 @@
 # MedX360 - Medical Booking Management Plugin
 
-A comprehensive WordPress plugin for managing medical bookings, clinics, hospitals, doctors, consultations, services, staff, payments, and appointments with a robust REST API backend.
+A comprehensive WordPress plugin for managing medical bookings, clinics, hospitals, doctors, consultations, services, staff, payments, and appointments with a modern React frontend and robust AJAX backend.
 
 ## Features
 
@@ -15,95 +15,14 @@ A comprehensive WordPress plugin for managing medical bookings, clinics, hospita
 - **Consultation Management**: Track patient consultations and medical records
 - **Onboarding Wizard**: Guided setup process for new installations
 
-### REST API Endpoints
-
-The plugin provides a comprehensive REST API with the following endpoints:
-
-#### Clinics
-- `GET /medx360/v1/clinics` - List all clinics
-- `POST /medx360/v1/clinics` - Create a new clinic
-- `GET /medx360/v1/clinics/{id}` - Get specific clinic
-- `PUT /medx360/v1/clinics/{id}` - Update clinic
-- `DELETE /medx360/v1/clinics/{id}` - Delete clinic
-- `GET /medx360/v1/clinics/slug/{slug}` - Get clinic by slug
-
-#### Hospitals
-- `GET /medx360/v1/hospitals` - List all hospitals
-- `POST /medx360/v1/hospitals` - Create a new hospital
-- `GET /medx360/v1/hospitals/{id}` - Get specific hospital
-- `PUT /medx360/v1/hospitals/{id}` - Update hospital
-- `DELETE /medx360/v1/hospitals/{id}` - Delete hospital
-- `GET /medx360/v1/hospitals/clinic/{clinic_id}` - Get hospitals by clinic
-
-#### Doctors
-- `GET /medx360/v1/doctors` - List all doctors
-- `POST /medx360/v1/doctors` - Create a new doctor
-- `GET /medx360/v1/doctors/{id}` - Get specific doctor
-- `PUT /medx360/v1/doctors/{id}` - Update doctor
-- `DELETE /medx360/v1/doctors/{id}` - Delete doctor
-- `GET /medx360/v1/doctors/clinic/{clinic_id}` - Get doctors by clinic
-- `GET /medx360/v1/doctors/hospital/{hospital_id}` - Get doctors by hospital
-- `GET /medx360/v1/doctors/{id}/schedule` - Get doctor schedule
-- `POST /medx360/v1/doctors/{id}/schedule` - Create doctor schedule
-- `PUT /medx360/v1/doctors/{id}/schedule` - Update doctor schedule
-- `GET /medx360/v1/doctors/{id}/availability` - Get doctor availability
-- `POST /medx360/v1/doctors/{id}/availability` - Create availability exception
-
-#### Services
-- `GET /medx360/v1/services` - List all services
-- `POST /medx360/v1/services` - Create a new service
-- `GET /medx360/v1/services/{id}` - Get specific service
-- `PUT /medx360/v1/services/{id}` - Update service
-- `DELETE /medx360/v1/services/{id}` - Delete service
-- `GET /medx360/v1/services/clinic/{clinic_id}` - Get services by clinic
-- `GET /medx360/v1/services/hospital/{hospital_id}` - Get services by hospital
-
-#### Staff
-- `GET /medx360/v1/staff` - List all staff
-- `POST /medx360/v1/staff` - Create a new staff member
-- `GET /medx360/v1/staff/{id}` - Get specific staff member
-- `PUT /medx360/v1/staff/{id}` - Update staff member
-- `DELETE /medx360/v1/staff/{id}` - Delete staff member
-- `GET /medx360/v1/staff/clinic/{clinic_id}` - Get staff by clinic
-
-#### Bookings
-- `GET /medx360/v1/bookings` - List all bookings
-- `POST /medx360/v1/bookings` - Create a new booking
-- `GET /medx360/v1/bookings/{id}` - Get specific booking
-- `PUT /medx360/v1/bookings/{id}` - Update booking
-- `DELETE /medx360/v1/bookings/{id}` - Delete booking
-- `GET /medx360/v1/bookings/clinic/{clinic_id}` - Get bookings by clinic
-- `GET /medx360/v1/bookings/doctor/{doctor_id}` - Get bookings by doctor
-- `PUT /medx360/v1/bookings/{id}/confirm` - Confirm booking
-- `PUT /medx360/v1/bookings/{id}/cancel` - Cancel booking
-
-#### Payments
-- `GET /medx360/v1/payments` - List all payments
-- `POST /medx360/v1/payments` - Create a new payment
-- `GET /medx360/v1/payments/{id}` - Get specific payment
-- `PUT /medx360/v1/payments/{id}` - Update payment
-- `GET /medx360/v1/payments/booking/{booking_id}` - Get payments by booking
-- `PUT /medx360/v1/payments/{id}/refund` - Refund payment
-
-#### Consultations
-- `GET /medx360/v1/consultations` - List all consultations
-- `POST /medx360/v1/consultations` - Create a new consultation
-- `GET /medx360/v1/consultations/{id}` - Get specific consultation
-- `PUT /medx360/v1/consultations/{id}` - Update consultation
-- `DELETE /medx360/v1/consultations/{id}` - Delete consultation
-- `GET /medx360/v1/consultations/booking/{booking_id}` - Get consultations by booking
-- `GET /medx360/v1/consultations/doctor/{doctor_id}` - Get consultations by doctor
-- `PUT /medx360/v1/consultations/{id}/complete` - Complete consultation
-
-#### Onboarding
-- `GET /medx360/v1/onboarding/status` - Get setup status
-- `GET /medx360/v1/onboarding/steps` - Get setup steps
-- `GET /medx360/v1/onboarding/progress` - Get setup progress
-- `GET /medx360/v1/onboarding/statistics` - Get system statistics
-- `POST /medx360/v1/onboarding/clinic` - Create default clinic
-- `POST /medx360/v1/onboarding/services` - Create default services
-- `PUT /medx360/v1/onboarding/complete` - Complete setup
-- `PUT /medx360/v1/onboarding/reset` - Reset setup
+### Technical Features
+- **Modern React Frontend**: Built with React 18, React Router, and React Query
+- **WordPress AJAX Backend**: Secure AJAX endpoints with nonce verification
+- **Responsive Design**: Mobile-first design with Tailwind CSS
+- **Performance Optimized**: Caching, database optimization, and efficient queries
+- **Security Focused**: Input validation, sanitization, and security logging
+- **Error Handling**: Comprehensive error handling and logging system
+- **Code Standards**: Follows WordPress and React coding standards
 
 ## Installation
 
@@ -111,9 +30,53 @@ The plugin provides a comprehensive REST API with the following endpoints:
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. Navigate to MedX360 in the admin menu to complete the setup wizard
 
-## Database Schema
+## Development
 
-The plugin creates the following database tables:
+### Prerequisites
+
+- WordPress 5.0+
+- PHP 7.4+
+- Node.js 16+
+- npm 8+
+
+### Backend Development
+
+The plugin follows WordPress coding standards and best practices:
+
+```bash
+# Install PHP CodeSniffer for WordPress
+composer install
+
+# Run code quality checks
+./vendor/bin/phpcs --standard=.phpcs.xml
+```
+
+### Frontend Development
+
+The React frontend is located in the `frontend/` directory:
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run linting
+npm run lint
+
+# Format code
+npm run format
+```
+
+### Database Schema
+
+The plugin creates the following optimized database tables:
 
 - `wp_medx360_clinics` - Clinic information
 - `wp_medx360_hospitals` - Hospital information
@@ -126,177 +89,136 @@ The plugin creates the following database tables:
 - `wp_medx360_doctor_schedules` - Doctor availability schedules
 - `wp_medx360_doctor_availability` - Doctor availability exceptions
 
-## Authentication
+### AJAX Endpoints
 
-The API uses WordPress nonce authentication. Include the `X-WP-Nonce` header in your requests:
+The plugin provides comprehensive AJAX endpoints with the following naming convention:
 
-```javascript
-fetch('/wp-json/medx360/v1/clinics', {
-    headers: {
-        'X-WP-Nonce': wpApiSettings.nonce
-    }
-})
-```
+#### Clinics
+- `medx360_get_clinics` - List all clinics
+- `medx360_create_clinic` - Create a new clinic
+- `medx360_get_clinic` - Get specific clinic
+- `medx360_update_clinic` - Update clinic
+- `medx360_delete_clinic` - Delete clinic
 
-## Usage Examples
+#### Hospitals
+- `medx360_get_hospitals` - List all hospitals
+- `medx360_create_hospital` - Create a new hospital
+- `medx360_get_hospital` - Get specific hospital
+- `medx360_update_hospital` - Update hospital
+- `medx360_delete_hospital` - Delete hospital
 
-### Creating a Clinic
+#### Doctors
+- `medx360_get_doctors` - List all doctors
+- `medx360_create_doctor` - Create a new doctor
+- `medx360_get_doctor` - Get specific doctor
+- `medx360_update_doctor` - Update doctor
+- `medx360_delete_doctor` - Delete doctor
 
-```javascript
-const clinicData = {
-    name: 'City Medical Center',
-    slug: 'city-medical-center',
-    description: 'A comprehensive medical facility',
-    address: '123 Medical Street',
-    city: 'Medical City',
-    state: 'MC',
-    country: 'USA',
-    postal_code: '12345',
-    phone: '+1234567890',
-    email: 'info@citymedical.com',
-    website: 'https://citymedical.com',
-    status: 'active'
-};
+#### Services
+- `medx360_get_services` - List all services
+- `medx360_create_service` - Create a new service
+- `medx360_get_service` - Get specific service
+- `medx360_update_service` - Update service
+- `medx360_delete_service` - Delete service
 
-fetch('/wp-json/medx360/v1/clinics', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': wpApiSettings.nonce
-    },
-    body: JSON.stringify(clinicData)
-});
-```
+#### Staff
+- `medx360_get_staff` - List all staff
+- `medx360_create_staff` - Create a new staff member
+- `medx360_get_staff_member` - Get specific staff member
+- `medx360_update_staff` - Update staff member
+- `medx360_delete_staff` - Delete staff member
 
-### Creating a Doctor
+#### Bookings
+- `medx360_get_bookings` - List all bookings
+- `medx360_create_booking` - Create a new booking
+- `medx360_get_booking` - Get specific booking
+- `medx360_update_booking` - Update booking
+- `medx360_delete_booking` - Delete booking
 
-```javascript
-const doctorData = {
-    clinic_id: 1,
-    first_name: 'John',
-    last_name: 'Smith',
-    email: 'john.smith@citymedical.com',
-    phone: '+1234567891',
-    specialization: 'Cardiology',
-    license_number: 'MD123456',
-    experience_years: 10,
-    consultation_fee: 150.00,
-    status: 'active'
-};
+#### Payments
+- `medx360_get_payments` - List all payments
+- `medx360_create_payment` - Create a new payment
+- `medx360_get_payment` - Get specific payment
+- `medx360_refund_payment` - Refund payment
 
-fetch('/wp-json/medx360/v1/doctors', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': wpApiSettings.nonce
-    },
-    body: JSON.stringify(doctorData)
-});
-```
+#### Consultations
+- `medx360_get_consultations` - List all consultations
+- `medx360_create_consultation` - Create a new consultation
+- `medx360_get_consultation` - Get specific consultation
+- `medx360_update_consultation` - Update consultation
+- `medx360_complete_consultation` - Complete consultation
 
-### Creating a Booking
+#### Onboarding
+- `medx360_get_onboarding_status` - Get setup status
+- `medx360_get_onboarding_steps` - Get setup steps
+- `medx360_get_onboarding_progress` - Get setup progress
+- `medx360_get_onboarding_statistics` - Get system statistics
+- `medx360_create_onboarding_clinic` - Create default clinic
+- `medx360_create_onboarding_services` - Create default services
+- `medx360_complete_onboarding` - Complete setup
+- `medx360_reset_onboarding` - Reset setup
 
-```javascript
-const bookingData = {
-    clinic_id: 1,
-    doctor_id: 1,
-    service_id: 1,
-    patient_name: 'Jane Doe',
-    patient_email: 'jane.doe@email.com',
-    patient_phone: '+1234567892',
-    appointment_date: '2024-01-15',
-    appointment_time: '10:00:00',
-    duration_minutes: 30,
-    status: 'pending',
-    total_amount: 150.00
-};
+## Security
 
-fetch('/wp-json/medx360/v1/bookings', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': wpApiSettings.nonce
-    },
-    body: JSON.stringify(bookingData)
-});
-```
+The plugin implements comprehensive security measures:
 
-## Settings
+- **Nonce Verification**: All AJAX requests are protected with WordPress nonces
+- **Input Validation**: All user inputs are validated and sanitized
+- **Permission Checks**: Role-based access control for all operations
+- **SQL Injection Prevention**: All database queries use prepared statements
+- **XSS Protection**: All outputs are properly escaped
+- **Security Logging**: All security events are logged for monitoring
 
-The plugin includes comprehensive settings for:
+## Performance
 
-- **Booking Settings**: Advance booking days, cancellation policies
-- **Notification Settings**: Email, SMS, and reminder notifications
-- **System Settings**: Timezone, date/time formats
-- **Payment Settings**: Currency, payment gateways
+The plugin is optimized for performance:
 
-## Permissions
+- **Database Optimization**: Proper indexing and foreign key constraints
+- **Caching System**: WordPress object cache integration
+- **Query Optimization**: Efficient database queries with pagination
+- **Asset Optimization**: Minified and compressed frontend assets
+- **Lazy Loading**: Components and data are loaded as needed
 
-The plugin uses WordPress user capabilities for access control:
+## Error Handling
 
-- `manage_options` - Full access to all features
-- `edit_posts` - Can manage clinics, hospitals, doctors, services, staff, and bookings
-- `read` - Can view data
+Comprehensive error handling and logging:
 
-## Development
+- **Structured Logging**: All errors are logged with context
+- **User-Friendly Messages**: Clear error messages for users
+- **Debug Information**: Detailed error information for developers
+- **Performance Monitoring**: Slow operations are logged and monitored
 
-### File Structure
+## Code Quality
 
-```
-wp-content/plugins/medx360/
-├── medx360.php                 # Main plugin file
-├── includes/
-│   ├── class-database.php     # Database management
-│   ├── class-api-controller.php # Base API controller
-│   ├── class-auth.php         # Authentication and permissions
-│   ├── class-validator.php    # Data validation
-│   ├── class-onboarding.php   # Onboarding functionality
-│   └── api/
-│       ├── class-clinics-api.php
-│       ├── class-hospitals-api.php
-│       ├── class-doctors-api.php
-│       ├── class-services-api.php
-│       ├── class-staff-api.php
-│       ├── class-bookings-api.php
-│       ├── class-payments-api.php
-│       ├── class-consultations-api.php
-│       └── class-onboarding-api.php
-├── assets/
-│   ├── css/
-│   │   └── admin.css          # Admin styles
-│   └── js/
-│       └── admin.js           # Admin JavaScript
-└── languages/                 # Translation files
-```
+The plugin follows industry best practices:
 
-### Hooks and Filters
+- **WordPress Standards**: Follows WordPress coding standards
+- **React Standards**: Follows React best practices and patterns
+- **ESLint Configuration**: Comprehensive linting rules
+- **Prettier Formatting**: Consistent code formatting
+- **PHP CodeSniffer**: WordPress-specific code quality checks
 
-The plugin provides various hooks for customization:
+## Contributing
 
-- `medx360_before_create_clinic` - Before creating a clinic
-- `medx360_after_create_clinic` - After creating a clinic
-- `medx360_before_create_booking` - Before creating a booking
-- `medx360_after_create_booking` - After creating a booking
-
-## Requirements
-
-- WordPress 5.0 or higher
-- PHP 7.4 or higher
-- MySQL 5.6 or higher
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes following the coding standards
+4. Run tests and quality checks
+5. Submit a pull request
 
 ## License
 
-GPL v2 or later
+This plugin is licensed under the GPL v2 or later.
 
 ## Support
 
-For support and feature requests, please contact the development team.
+For support and documentation, please visit the plugin's official website or create an issue in the repository.
 
 ## Changelog
 
 ### Version 1.0.0
 - Initial release
-- Complete REST API implementation
-- Onboarding wizard
-- Admin dashboard
-- Comprehensive medical booking system
+- Complete medical booking management system
+- React frontend with WordPress AJAX backend
+- Comprehensive security and performance optimizations
+- Full code quality and standards compliance

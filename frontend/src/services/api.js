@@ -1,39 +1,64 @@
 /**
  * MedX360 API Service
- * Centralized API client for all WordPress REST API endpoints
+ * Centralized API client for all WordPress AJAX endpoints
  */
 
 class MedX360API {
   constructor() {
-    this.baseURL = window.medx360?.api_url || '/wp-json/medx360/v1/';
-    this.nonce = window.medx360?.nonce || '';
+    // No need to set ajaxURL in constructor since we'll use getter
+  }
+  
+  get ajaxURL() {
+    return window.medx360?.ajax_url || window.location.origin + '/wp-admin/admin-ajax.php';
+  }
+  
+  get nonce() {
+    return window.medx360?.nonce || '';
   }
 
   /**
-   * Make authenticated API request
+   * Make authenticated AJAX request
    */
-  async request(endpoint, options = {}) {
-    const url = `${this.baseURL}${endpoint}`;
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-WP-Nonce': this.nonce,
-        ...options.headers,
-      },
-      ...options,
-    };
+  async ajaxRequest(action, data = {}) {
+    const formData = new FormData();
+    formData.append('action', action);
+    formData.append('nonce', this.nonce);
+    
+    // Add all data fields
+    Object.keys(data).forEach(key => {
+      if (data[key] !== null && data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
+    });
 
     try {
-      const response = await fetch(url, config);
+      const response = await fetch(this.ajaxURL, {
+        method: 'POST',
+        body: formData,
+      });
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      
+      if (!result.success) {
+        // Handle validation errors with detailed messages
+        if (result.data?.code === 'validation_error' && result.data?.message) {
+          const error = new Error(result.data.message);
+          error.code = result.data.code;
+          error.status = result.data.status;
+          throw error;
+        }
+        
+        // Handle other types of errors
+        throw new Error(result.data?.message || 'Request failed');
+      }
+
+      return result.data;
     } catch (error) {
-      console.error('API Request failed:', error);
+      console.error('AJAX Request failed:', error);
       throw error;
     }
   }
@@ -41,388 +66,305 @@ class MedX360API {
   // ==================== CLINICS API ====================
   
   async getClinics(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`clinics${queryString ? `?${queryString}` : ''}`);
+    return this.ajaxRequest('medx360_get_clinics', params);
   }
 
   async getClinic(id) {
-    return this.request(`clinics/${id}`);
+    return this.ajaxRequest('medx360_get_clinic', { id });
   }
 
   async createClinic(data) {
-    return this.request('clinics', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_clinic', data);
   }
 
   async updateClinic(id, data) {
-    return this.request(`clinics/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_clinic', { id, ...data });
   }
 
   async deleteClinic(id) {
-    return this.request(`clinics/${id}`, {
-      method: 'DELETE',
-    });
+    return this.ajaxRequest('medx360_delete_clinic', { id });
   }
 
   async getClinicBySlug(slug) {
-    return this.request(`clinics/slug/${slug}`);
+    return this.ajaxRequest('medx360_get_clinic_by_slug', { slug });
   }
 
   // ==================== HOSPITALS API ====================
   
   async getHospitals(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`hospitals${queryString ? `?${queryString}` : ''}`);
+    return this.ajaxRequest('medx360_get_hospitals', params);
   }
 
   async getHospital(id) {
-    return this.request(`hospitals/${id}`);
+    return this.ajaxRequest('medx360_get_hospital', { id });
   }
 
   async createHospital(data) {
-    return this.request('hospitals', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_hospital', data);
   }
 
   async updateHospital(id, data) {
-    return this.request(`hospitals/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_hospital', { id, ...data });
   }
 
   async deleteHospital(id) {
-    return this.request(`hospitals/${id}`, {
-      method: 'DELETE',
-    });
+    return this.ajaxRequest('medx360_delete_hospital', { id });
   }
 
   async getHospitalsByClinic(clinicId) {
-    return this.request(`hospitals/clinic/${clinicId}`);
+    return this.ajaxRequest('medx360_get_hospitals_by_clinic', { clinic_id: clinicId });
   }
 
   // ==================== DOCTORS API ====================
   
   async getDoctors(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`doctors${queryString ? `?${queryString}` : ''}`);
+    return this.ajaxRequest('medx360_get_doctors', params);
   }
 
   async getDoctor(id) {
-    return this.request(`doctors/${id}`);
+    return this.ajaxRequest('medx360_get_doctor', { id });
   }
 
   async createDoctor(data) {
-    return this.request('doctors', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_doctor', data);
   }
 
   async updateDoctor(id, data) {
-    return this.request(`doctors/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_doctor', { id, ...data });
   }
 
   async deleteDoctor(id) {
-    return this.request(`doctors/${id}`, {
-      method: 'DELETE',
-    });
+    return this.ajaxRequest('medx360_delete_doctor', { id });
   }
 
   async getDoctorsByClinic(clinicId) {
-    return this.request(`doctors/clinic/${clinicId}`);
+    return this.ajaxRequest('medx360_get_doctors_by_clinic', { clinic_id: clinicId });
   }
 
   async getDoctorsByHospital(hospitalId) {
-    return this.request(`doctors/hospital/${hospitalId}`);
+    return this.ajaxRequest('medx360_get_doctors_by_hospital', { hospital_id: hospitalId });
   }
 
   async getDoctorSchedule(doctorId) {
-    return this.request(`doctors/${doctorId}/schedule`);
+    return this.ajaxRequest('medx360_get_doctor_schedule', { id: doctorId });
   }
 
   async createDoctorSchedule(doctorId, data) {
-    return this.request(`doctors/${doctorId}/schedule`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_doctor_schedule', { id: doctorId, ...data });
   }
 
   async updateDoctorSchedule(doctorId, data) {
-    return this.request(`doctors/${doctorId}/schedule`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_doctor_schedule', { id: doctorId, ...data });
   }
 
   async getDoctorAvailability(doctorId) {
-    return this.request(`doctors/${doctorId}/availability`);
+    return this.ajaxRequest('medx360_get_doctor_availability', { id: doctorId });
   }
 
   async createDoctorAvailability(doctorId, data) {
-    return this.request(`doctors/${doctorId}/availability`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_doctor_availability', { id: doctorId, ...data });
   }
 
   // ==================== SERVICES API ====================
   
   async getServices(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`services${queryString ? `?${queryString}` : ''}`);
+    return this.ajaxRequest('medx360_get_services', params);
   }
 
   async getService(id) {
-    return this.request(`services/${id}`);
+    return this.ajaxRequest('medx360_get_service', { id });
   }
 
   async createService(data) {
-    return this.request('services', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_service', data);
   }
 
   async updateService(id, data) {
-    return this.request(`services/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_service', { id, ...data });
   }
 
   async deleteService(id) {
-    return this.request(`services/${id}`, {
-      method: 'DELETE',
-    });
+    return this.ajaxRequest('medx360_delete_service', { id });
   }
 
   async getServicesByClinic(clinicId) {
-    return this.request(`services/clinic/${clinicId}`);
+    return this.ajaxRequest('medx360_get_services_by_clinic', { clinic_id: clinicId });
   }
 
   async getServicesByHospital(hospitalId) {
-    return this.request(`services/hospital/${hospitalId}`);
+    return this.ajaxRequest('medx360_get_services_by_hospital', { hospital_id: hospitalId });
   }
 
   // ==================== STAFF API ====================
   
   async getStaff(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`staff${queryString ? `?${queryString}` : ''}`);
+    return this.ajaxRequest('medx360_get_staff', params);
   }
 
   async getStaffMember(id) {
-    return this.request(`staff/${id}`);
+    return this.ajaxRequest('medx360_get_staff_member', { id });
   }
 
   async createStaffMember(data) {
-    return this.request('staff', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_staff_member', data);
   }
 
   async updateStaffMember(id, data) {
-    return this.request(`staff/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_staff_member', { id, ...data });
   }
 
   async deleteStaffMember(id) {
-    return this.request(`staff/${id}`, {
-      method: 'DELETE',
-    });
+    return this.ajaxRequest('medx360_delete_staff_member', { id });
   }
 
   async getStaffByClinic(clinicId) {
-    return this.request(`staff/clinic/${clinicId}`);
+    return this.ajaxRequest('medx360_get_staff_by_clinic', { clinic_id: clinicId });
   }
 
   // ==================== BOOKINGS API ====================
   
   async getBookings(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`bookings${queryString ? `?${queryString}` : ''}`);
+    return this.ajaxRequest('medx360_get_bookings', params);
   }
 
   async getBooking(id) {
-    return this.request(`bookings/${id}`);
+    return this.ajaxRequest('medx360_get_booking', { id });
   }
 
   async createBooking(data) {
-    return this.request('bookings', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_booking', data);
   }
 
   async updateBooking(id, data) {
-    return this.request(`bookings/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_booking', { id, ...data });
   }
 
   async deleteBooking(id) {
-    return this.request(`bookings/${id}`, {
-      method: 'DELETE',
-    });
+    return this.ajaxRequest('medx360_delete_booking', { id });
   }
 
   async getBookingsByClinic(clinicId) {
-    return this.request(`bookings/clinic/${clinicId}`);
+    return this.ajaxRequest('medx360_get_bookings_by_clinic', { clinic_id: clinicId });
   }
 
   async getBookingsByDoctor(doctorId) {
-    return this.request(`bookings/doctor/${doctorId}`);
+    return this.ajaxRequest('medx360_get_bookings_by_doctor', { doctor_id: doctorId });
   }
 
   async confirmBooking(id) {
-    return this.request(`bookings/${id}/confirm`, {
-      method: 'PUT',
-    });
+    return this.ajaxRequest('medx360_confirm_booking', { id });
   }
 
   async cancelBooking(id) {
-    return this.request(`bookings/${id}/cancel`, {
-      method: 'PUT',
-    });
+    return this.ajaxRequest('medx360_cancel_booking', { id });
   }
 
   // ==================== PAYMENTS API ====================
   
   async getPayments(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`payments${queryString ? `?${queryString}` : ''}`);
+    return this.ajaxRequest('medx360_get_payments', params);
   }
 
   async getPayment(id) {
-    return this.request(`payments/${id}`);
+    return this.ajaxRequest('medx360_get_payment', { id });
   }
 
   async createPayment(data) {
-    return this.request('payments', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_payment', data);
   }
 
   async updatePayment(id, data) {
-    return this.request(`payments/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_payment', { id, ...data });
   }
 
   async getPaymentsByBooking(bookingId) {
-    return this.request(`payments/booking/${bookingId}`);
+    return this.ajaxRequest('medx360_get_payments_by_booking', { booking_id: bookingId });
   }
 
   async refundPayment(id) {
-    return this.request(`payments/${id}/refund`, {
-      method: 'PUT',
-    });
+    return this.ajaxRequest('medx360_refund_payment', { id });
   }
 
   // ==================== CONSULTATIONS API ====================
   
   async getConsultations(params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    return this.request(`consultations${queryString ? `?${queryString}` : ''}`);
+    return this.ajaxRequest('medx360_get_consultations', params);
   }
 
   async getConsultation(id) {
-    return this.request(`consultations/${id}`);
+    return this.ajaxRequest('medx360_get_consultation', { id });
   }
 
   async createConsultation(data) {
-    return this.request('consultations', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_consultation', data);
   }
 
   async updateConsultation(id, data) {
-    return this.request(`consultations/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_update_consultation', { id, ...data });
   }
 
   async deleteConsultation(id) {
-    return this.request(`consultations/${id}`, {
-      method: 'DELETE',
-    });
+    return this.ajaxRequest('medx360_delete_consultation', { id });
   }
 
   async getConsultationsByBooking(bookingId) {
-    return this.request(`consultations/booking/${bookingId}`);
+    return this.ajaxRequest('medx360_get_consultations_by_booking', { booking_id: bookingId });
   }
 
   async getConsultationsByDoctor(doctorId) {
-    return this.request(`consultations/doctor/${doctorId}`);
+    return this.ajaxRequest('medx360_get_consultations_by_doctor', { doctor_id: doctorId });
   }
 
   async completeConsultation(id) {
-    return this.request(`consultations/${id}/complete`, {
-      method: 'PUT',
-    });
+    return this.ajaxRequest('medx360_complete_consultation', { id });
   }
 
   // ==================== ONBOARDING API ====================
   
   async getOnboardingStatus() {
-    return this.request('onboarding/status');
+    return this.ajaxRequest('medx360_get_onboarding_status');
   }
 
   async getOnboardingSteps() {
-    return this.request('onboarding/steps');
+    return this.ajaxRequest('medx360_get_onboarding_steps');
   }
 
   async getOnboardingProgress() {
-    return this.request('onboarding/progress');
+    return this.ajaxRequest('medx360_get_onboarding_progress');
   }
 
   async getOnboardingStatistics() {
-    return this.request('onboarding/statistics');
+    return this.ajaxRequest('medx360_get_onboarding_statistics');
   }
 
   async createDefaultClinic(data) {
-    return this.request('onboarding/clinic', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_onboarding_clinic', data);
   }
 
   async createDefaultServices(data) {
-    return this.request('onboarding/services', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    return this.ajaxRequest('medx360_create_onboarding_services', data);
   }
 
   async completeOnboarding() {
-    return this.request('onboarding/complete', {
-      method: 'PUT',
-    });
+    return this.ajaxRequest('medx360_complete_onboarding');
   }
 
   async resetOnboarding() {
-    return this.request('onboarding/reset', {
-      method: 'PUT',
-    });
+    return this.ajaxRequest('medx360_reset_onboarding');
+  }
+
+  // ==================== TEST API ====================
+  
+  async testConnection() {
+    return this.ajaxRequest('medx360_test');
+  }
+
+  async testSimple() {
+    return this.ajaxRequest('medx360_test_simple');
+  }
+
+  async testDoctors() {
+    return this.ajaxRequest('medx360_get_doctors_test');
   }
 }
 

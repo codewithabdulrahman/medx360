@@ -29,8 +29,9 @@ export const useCreateClinic = () => {
   
   return useMutation({
     mutationFn: (data) => api.createClinic(data),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['clinics'] });
+      return data;
     },
   });
 };
@@ -40,9 +41,10 @@ export const useUpdateClinic = () => {
   
   return useMutation({
     mutationFn: ({ id, data }) => api.updateClinic(id, data),
-    onSuccess: (_, { id }) => {
+    onSuccess: (data, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['clinics'] });
       queryClient.invalidateQueries({ queryKey: ['clinic', id] });
+      return data;
     },
   });
 };
@@ -52,8 +54,9 @@ export const useDeleteClinic = () => {
   
   return useMutation({
     mutationFn: (id) => api.deleteClinic(id),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['clinics'] });
+      return data;
     },
   });
 };

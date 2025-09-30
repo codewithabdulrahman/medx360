@@ -35,7 +35,7 @@ class MedX360_Database {
         $clinics_sql = "CREATE TABLE $clinics_table (
             id int(11) NOT NULL AUTO_INCREMENT,
             name varchar(255) NOT NULL,
-            slug varchar(255) NOT NULL,
+            slug varchar(200) NOT NULL,
             description text,
             address text,
             city varchar(100),
@@ -43,8 +43,8 @@ class MedX360_Database {
             country varchar(100),
             postal_code varchar(20),
             phone varchar(20),
-            email varchar(100),
-            website varchar(255),
+            email varchar(254),
+            website varchar(2048),
             logo_url varchar(500),
             status enum('active','inactive','pending') DEFAULT 'active',
             settings longtext,
@@ -54,7 +54,9 @@ class MedX360_Database {
             UNIQUE KEY slug (slug),
             KEY status (status),
             KEY city (city),
-            KEY state (state)
+            KEY state (state),
+            KEY email (email),
+            KEY created_at (created_at)
         ) $charset_collate;";
         
         // Hospitals table
@@ -63,7 +65,7 @@ class MedX360_Database {
             id int(11) NOT NULL AUTO_INCREMENT,
             clinic_id int(11) NOT NULL,
             name varchar(255) NOT NULL,
-            slug varchar(255) NOT NULL,
+            slug varchar(200) NOT NULL,
             description text,
             address text,
             city varchar(100),
@@ -71,8 +73,8 @@ class MedX360_Database {
             country varchar(100),
             postal_code varchar(20),
             phone varchar(20),
-            email varchar(100),
-            website varchar(255),
+            email varchar(254),
+            website varchar(2048),
             logo_url varchar(500),
             status enum('active','inactive','pending') DEFAULT 'active',
             settings longtext,
@@ -83,7 +85,10 @@ class MedX360_Database {
             KEY clinic_id (clinic_id),
             KEY status (status),
             KEY city (city),
-            KEY state (state)
+            KEY state (state),
+            KEY email (email),
+            KEY created_at (created_at),
+            FOREIGN KEY (clinic_id) REFERENCES {$wpdb->prefix}medx360_clinics(id) ON DELETE CASCADE
         ) $charset_collate;";
         
         // Doctors table
@@ -95,7 +100,7 @@ class MedX360_Database {
             user_id bigint(20),
             first_name varchar(100) NOT NULL,
             last_name varchar(100) NOT NULL,
-            email varchar(100) NOT NULL,
+            email varchar(254) NOT NULL,
             phone varchar(20),
             specialization varchar(255),
             license_number varchar(100),
@@ -113,7 +118,12 @@ class MedX360_Database {
             KEY hospital_id (hospital_id),
             KEY user_id (user_id),
             KEY status (status),
-            KEY specialization (specialization)
+            KEY specialization (specialization),
+            KEY email (email),
+            KEY created_at (created_at),
+            KEY name_search (first_name, last_name),
+            FOREIGN KEY (clinic_id) REFERENCES {$wpdb->prefix}medx360_clinics(id) ON DELETE CASCADE,
+            FOREIGN KEY (hospital_id) REFERENCES {$wpdb->prefix}medx360_hospitals(id) ON DELETE SET NULL
         ) $charset_collate;";
         
         // Services table
@@ -172,7 +182,7 @@ class MedX360_Database {
             doctor_id int(11),
             service_id int(11),
             patient_name varchar(255) NOT NULL,
-            patient_email varchar(100) NOT NULL,
+            patient_email varchar(254) NOT NULL,
             patient_phone varchar(20),
             patient_dob date,
             patient_gender enum('male','female','other'),
@@ -194,7 +204,14 @@ class MedX360_Database {
             KEY service_id (service_id),
             KEY appointment_date (appointment_date),
             KEY status (status),
-            KEY payment_status (payment_status)
+            KEY payment_status (payment_status),
+            KEY patient_email (patient_email),
+            KEY created_at (created_at),
+            KEY appointment_datetime (appointment_date, appointment_time),
+            FOREIGN KEY (clinic_id) REFERENCES {$wpdb->prefix}medx360_clinics(id) ON DELETE CASCADE,
+            FOREIGN KEY (hospital_id) REFERENCES {$wpdb->prefix}medx360_hospitals(id) ON DELETE SET NULL,
+            FOREIGN KEY (doctor_id) REFERENCES {$wpdb->prefix}medx360_doctors(id) ON DELETE SET NULL,
+            FOREIGN KEY (service_id) REFERENCES {$wpdb->prefix}medx360_services(id) ON DELETE SET NULL
         ) $charset_collate;";
         
         // Consultations table
@@ -216,7 +233,11 @@ class MedX360_Database {
             KEY booking_id (booking_id),
             KEY doctor_id (doctor_id),
             KEY patient_id (patient_id),
-            KEY status (status)
+            KEY status (status),
+            KEY created_at (created_at),
+            KEY follow_up_date (follow_up_date),
+            FOREIGN KEY (booking_id) REFERENCES {$wpdb->prefix}medx360_bookings(id) ON DELETE CASCADE,
+            FOREIGN KEY (doctor_id) REFERENCES {$wpdb->prefix}medx360_doctors(id) ON DELETE CASCADE
         ) $charset_collate;";
         
         // Payments table
@@ -236,7 +257,10 @@ class MedX360_Database {
             PRIMARY KEY (id),
             KEY booking_id (booking_id),
             KEY status (status),
-            KEY transaction_id (transaction_id)
+            KEY transaction_id (transaction_id),
+            KEY created_at (created_at),
+            KEY payment_method (payment_method),
+            FOREIGN KEY (booking_id) REFERENCES {$wpdb->prefix}medx360_bookings(id) ON DELETE CASCADE
         ) $charset_collate;";
         
         // Doctor schedules table
@@ -252,7 +276,9 @@ class MedX360_Database {
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY doctor_id (doctor_id),
-            KEY day_of_week (day_of_week)
+            KEY day_of_week (day_of_week),
+            KEY doctor_day (doctor_id, day_of_week),
+            FOREIGN KEY (doctor_id) REFERENCES {$wpdb->prefix}medx360_doctors(id) ON DELETE CASCADE
         ) $charset_collate;";
         
         // Doctor availability exceptions table
@@ -269,7 +295,9 @@ class MedX360_Database {
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY doctor_id (doctor_id),
-            KEY date (date)
+            KEY date (date),
+            KEY doctor_date (doctor_id, date),
+            FOREIGN KEY (doctor_id) REFERENCES {$wpdb->prefix}medx360_doctors(id) ON DELETE CASCADE
         ) $charset_collate;";
         
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');

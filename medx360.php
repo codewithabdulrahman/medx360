@@ -52,10 +52,8 @@ class MedX360 {
      * Constructor
      */
     private function __construct() {
-        error_log('MedX360: Plugin constructor called');
         $this->init_hooks();
         $this->load_dependencies();
-        error_log('MedX360: Plugin initialization complete');
     }
     
     /**
@@ -66,8 +64,6 @@ class MedX360 {
         register_deactivation_hook(__FILE__, array($this, 'deactivate'));
         
         add_action('init', array($this, 'init'));
-        add_action('wp_ajax_medx360_init', array($this, 'init_ajax'));
-        add_action('wp_ajax_nopriv_medx360_init', array($this, 'init_ajax'));
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'));
     }
@@ -82,6 +78,8 @@ class MedX360 {
         require_once MEDX360_PLUGIN_DIR . 'includes/class-auth.php';
         require_once MEDX360_PLUGIN_DIR . 'includes/class-validator.php';
         require_once MEDX360_PLUGIN_DIR . 'includes/class-onboarding.php';
+        require_once MEDX360_PLUGIN_DIR . 'includes/class-logger.php';
+        require_once MEDX360_PLUGIN_DIR . 'includes/class-cache.php';
         
         // AJAX endpoints
         require_once MEDX360_PLUGIN_DIR . 'includes/ajax/class-clinics-ajax.php';
@@ -104,6 +102,18 @@ class MedX360 {
         
         // Initialize database
         MedX360_Database::get_instance();
+        
+        // Initialize AJAX actions
+        $this->init_ajax();
+        
+        // Warm up cache
+        MedX360_Cache::warm_up();
+        
+        // Log plugin initialization
+        MedX360_Logger::info('MedX360 Plugin initialized', array(
+            'version' => MEDX360_VERSION,
+            'user_id' => get_current_user_id()
+        ));
     }
     
     /**
@@ -117,56 +127,31 @@ class MedX360 {
         }
         $initialized = true;
         
-        // Add debug logging
-        error_log('MedX360: init_ajax() called');
-        
         // Initialize AJAX controllers
-        try {
-            $clinics_ajax = new MedX360_Clinics_AJAX();
-            $clinics_ajax->register_actions();
-            error_log('MedX360: Clinics AJAX initialized');
-            
-            $hospitals_ajax = new MedX360_Hospitals_AJAX();
-            $hospitals_ajax->register_actions();
-            error_log('MedX360: Hospitals AJAX initialized');
-            
-            $doctors_ajax = new MedX360_Doctors_AJAX();
-            $doctors_ajax->register_actions();
-            error_log('MedX360: Doctors AJAX initialized');
-            
-            $services_ajax = new MedX360_Services_AJAX();
-            $services_ajax->register_actions();
-            error_log('MedX360: Services AJAX initialized');
-            
-            $staff_ajax = new MedX360_Staff_AJAX();
-            $staff_ajax->register_actions();
-            error_log('MedX360: Staff AJAX initialized');
-            
-            $bookings_ajax = new MedX360_Bookings_AJAX();
-            $bookings_ajax->register_actions();
-            error_log('MedX360: Bookings AJAX initialized');
-            
-            $payments_ajax = new MedX360_Payments_AJAX();
-            $payments_ajax->register_actions();
-            error_log('MedX360: Payments AJAX initialized');
-            
-            $consultations_ajax = new MedX360_Consultations_AJAX();
-            $consultations_ajax->register_actions();
-            error_log('MedX360: Consultations AJAX initialized');
-            
-            $onboarding_ajax = new MedX360_Onboarding_AJAX();
-            $onboarding_ajax->register_actions();
-            error_log('MedX360: Onboarding AJAX initialized');
-            
-        } catch (Exception $e) {
-            error_log('MedX360: Error initializing AJAX controllers: ' . $e->getMessage());
+        $ajax_controllers = array(
+            'MedX360_Clinics_AJAX',
+            'MedX360_Hospitals_AJAX',
+            'MedX360_Doctors_AJAX',
+            'MedX360_Services_AJAX',
+            'MedX360_Staff_AJAX',
+            'MedX360_Bookings_AJAX',
+            'MedX360_Payments_AJAX',
+            'MedX360_Consultations_AJAX',
+            'MedX360_Onboarding_AJAX'
+        );
+        
+        foreach ($ajax_controllers as $controller_class) {
+            if (class_exists($controller_class)) {
+                $controller = new $controller_class();
+                if (method_exists($controller, 'register_actions')) {
+                    $controller->register_actions();
+                }
+            }
         }
         
-        // Add a simple test endpoint
+        // Add test endpoint for debugging
         add_action('wp_ajax_medx360_test', array($this, 'ajax_test'));
         add_action('wp_ajax_nopriv_medx360_test', array($this, 'ajax_test'));
-        
-        error_log('MedX360: AJAX initialization complete');
     }
     
     /**
@@ -174,9 +159,9 @@ class MedX360 {
      */
     public function ajax_test() {
         wp_send_json_success(array(
-            'message' => 'MedX360 Plugin AJAX is working!',
+            'message' => __('MedX360 Plugin AJAX is working!', 'medx360'),
             'timestamp' => current_time('mysql'),
-            'ajax_enabled' => true
+            'version' => MEDX360_VERSION
         ));
     }
     
@@ -246,44 +231,7 @@ class MedX360 {
         }
         
         // Add custom CSS for WordPress admin integration
-        echo '<style>
-            .medx360-react-container {
-                margin: -20px -20px 0 -20px;
-                min-height: calc(100vh - 32px);
-                background: white;
-                padding-top: 32px; /* Account for WordPress admin bar */
-            }
-            #root {
-                min-height: calc(100vh - 32px);
-            }
-            .medx360-react-container * {
-                box-sizing: border-box;
-            }
-            /* Ensure React app doesn\'t interfere with WordPress admin */
-            .medx360-react-container .fixed {
-                position: relative !important;
-            }
-            /* Prevent React app from covering WordPress admin elements */
-            .medx360-react-container {
-                position: relative;
-                z-index: 1;
-            }
-            /* Ensure proper scrolling within WordPress admin */
-            .medx360-react-container .overflow-hidden {
-                overflow: visible !important;
-            }
-            /* Fix for WordPress admin bar overlap */
-            @media screen and (max-width: 782px) {
-                .medx360-react-container {
-                    padding-top: 46px; /* Mobile admin bar height */
-                }
-            }
-            @media screen and (min-width: 783px) {
-                .medx360-react-container {
-                    padding-top: 32px; /* Desktop admin bar height */
-                }
-            }
-        </style>';
+        $this->output_admin_styles();
         
         // Load JS files
         foreach ($js_files as $js_file) {
@@ -291,36 +239,78 @@ class MedX360 {
             echo '<script src="' . esc_url($dist_url . $js_filename) . '"></script>';
         }
         
-        // Pass WordPress data to React and fix admin bar overlap
-        echo '<script>
-            // Store WordPress data
-            window.medx360 = {
-                ajax_url: "' . admin_url('admin-ajax.php') . '",
-                nonce: "' . wp_create_nonce('medx360_ajax') . '",
-                user: ' . json_encode(wp_get_current_user()) . ',
-                strings: {
-                    loading: "' . __('Loading...', 'medx360') . '",
-                    error: "' . __('An error occurred', 'medx360') . '",
-                    success: "' . __('Success!', 'medx360') . '"
+        // Pass WordPress data to React
+        $this->output_wp_data_script();
+    }
+    
+    /**
+     * Output admin styles for React integration
+     */
+    private function output_admin_styles() {
+        echo '<style>
+            .medx360-react-container {
+                margin: -20px -20px 0 -20px;
+                min-height: calc(100vh - 32px);
+                background: white;
+                padding-top: 32px;
+                position: relative;
+                z-index: 1;
+            }
+            #root {
+                min-height: calc(100vh - 32px);
+            }
+            .medx360-react-container * {
+                box-sizing: border-box;
+            }
+            .medx360-react-container .fixed {
+                position: relative !important;
+            }
+            .medx360-react-container .overflow-hidden {
+                overflow: visible !important;
+            }
+            @media screen and (max-width: 782px) {
+                .medx360-react-container {
+                    padding-top: 46px;
                 }
-            };
+            }
+            @media screen and (min-width: 783px) {
+                .medx360-react-container {
+                    padding-top: 32px;
+                }
+            }
+        </style>';
+    }
+    
+    /**
+     * Output WordPress data script for React
+     */
+    private function output_wp_data_script() {
+        $wp_data = array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('medx360_ajax'),
+            'user' => wp_get_current_user(),
+            'strings' => array(
+                'loading' => __('Loading...', 'medx360'),
+                'error' => __('An error occurred', 'medx360'),
+                'success' => __('Success!', 'medx360')
+            )
+        );
+        
+        echo '<script>
+            window.medx360 = ' . wp_json_encode($wp_data) . ';
             
-            // Fix WordPress admin bar overlap
             function adjustForAdminBar() {
                 const adminBar = document.getElementById("wpadminbar");
                 const container = document.querySelector(".medx360-react-container");
                 
                 if (adminBar && container) {
-                    const adminBarHeight = adminBar.offsetHeight;
-                    container.style.paddingTop = adminBarHeight + "px";
+                    container.style.paddingTop = adminBar.offsetHeight + "px";
                 }
             }
             
-            // Run on load and resize
             document.addEventListener("DOMContentLoaded", adjustForAdminBar);
             window.addEventListener("resize", adjustForAdminBar);
             
-            // Also run immediately in case DOM is already loaded
             if (document.readyState === "loading") {
                 document.addEventListener("DOMContentLoaded", adjustForAdminBar);
             } else {
@@ -371,22 +361,11 @@ class MedX360 {
         if (strpos($hook, 'medx360') !== false) {
             $react_frontend_path = MEDX360_PLUGIN_DIR . 'frontend/dist/index.html';
             
-            if (file_exists($react_frontend_path)) {
-                // Load React frontend
-                $this->enqueue_react_frontend();
-            } else {
+            if (!file_exists($react_frontend_path)) {
                 // Fallback to basic admin interface
                 $this->enqueue_admin_fallback();
             }
         }
-    }
-    
-    /**
-     * Enqueue React frontend assets
-     */
-    private function enqueue_react_frontend() {
-        // This method is no longer needed since we load assets directly in admin_page()
-        // Keeping it for backward compatibility
     }
     
     /**

@@ -32,6 +32,9 @@ import {
   FormSelect,
   FormTextarea 
 } from '@components/forms';
+import Modal from '@components/Modal';
+import ConfirmationModal from '@components/ConfirmationModal';
+import { useToastContext } from '@components/ToastContext';
 
 const DoctorCard = ({ doctor, onEdit, onDelete, onView }) => {
   const statusColors = {
@@ -152,6 +155,44 @@ const DoctorForm = ({ doctor, onSave, onCancel, isOpen, isLoading }) => {
 
   const [errors, setErrors] = useState({});
 
+  // Reset form when doctor changes
+  React.useEffect(() => {
+    if (doctor) {
+      setFormData({
+        clinic_id: doctor.clinic_id || '',
+        hospital_id: doctor.hospital_id || '',
+        first_name: doctor.first_name || '',
+        last_name: doctor.last_name || '',
+        email: doctor.email || '',
+        phone: doctor.phone || '',
+        specialization: doctor.specialization || '',
+        license_number: doctor.license_number || '',
+        experience_years: doctor.experience_years || '',
+        education: doctor.education || '',
+        bio: doctor.bio || '',
+        consultation_fee: doctor.consultation_fee || '',
+        status: doctor.status || 'active',
+      });
+    } else {
+      setFormData({
+        clinic_id: '',
+        hospital_id: '',
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone: '',
+        specialization: '',
+        license_number: '',
+        experience_years: '',
+        education: '',
+        bio: '',
+        consultation_fee: '',
+        status: 'active',
+      });
+    }
+    setErrors({});
+  }, [doctor]);
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -203,8 +244,6 @@ const DoctorForm = ({ doctor, onSave, onCancel, isOpen, isLoading }) => {
     }
   };
 
-  if (!isOpen) return null;
-
   const clinicOptions = clinics.map(clinic => ({
     value: clinic.id,
     label: clinic.name
@@ -216,159 +255,145 @@ const DoctorForm = ({ doctor, onSave, onCancel, isOpen, isLoading }) => {
   }));
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div className="mt-3">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              {doctor ? 'Edit Doctor' : 'Add New Doctor'}
-            </h3>
-            <button
-              onClick={onCancel}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <span className="sr-only">Close</span>
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormInput
-                label="First Name"
-                value={formData.first_name}
-                onChange={(e) => handleChange('first_name', e.target.value)}
-                error={errors.first_name}
-                required
-              />
-              
-              <FormInput
-                label="Last Name"
-                value={formData.last_name}
-                onChange={(e) => handleChange('last_name', e.target.value)}
-                error={errors.last_name}
-                required
-              />
-              
-              <FormInput
-                label="Email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                error={errors.email}
-                required
-              />
-              
-              <FormInput
-                label="Phone"
-                value={formData.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
-                error={errors.phone}
-                required
-              />
-              
-              <FormSelect
-                label="Clinic"
-                value={formData.clinic_id}
-                onChange={(e) => handleChange('clinic_id', e.target.value)}
-                options={clinicOptions}
-                error={errors.clinic_id}
-                required
-              />
-              
-              <FormSelect
-                label="Hospital"
-                value={formData.hospital_id}
-                onChange={(e) => handleChange('hospital_id', e.target.value)}
-                options={hospitalOptions}
-                error={errors.hospital_id}
-              />
-              
-              <FormInput
-                label="Specialization"
-                value={formData.specialization}
-                onChange={(e) => handleChange('specialization', e.target.value)}
-                error={errors.specialization}
-                required
-                placeholder="e.g., Cardiology, Neurology"
-              />
-              
-              <FormInput
-                label="License Number"
-                value={formData.license_number}
-                onChange={(e) => handleChange('license_number', e.target.value)}
-                error={errors.license_number}
-                required
-              />
-              
-              <FormInput
-                label="Experience (Years)"
-                type="number"
-                value={formData.experience_years}
-                onChange={(e) => handleChange('experience_years', e.target.value)}
-                error={errors.experience_years}
-                min="0"
-                max="50"
-              />
-              
-              <FormInput
-                label="Consultation Fee"
-                type="number"
-                step="0.01"
-                value={formData.consultation_fee}
-                onChange={(e) => handleChange('consultation_fee', e.target.value)}
-                error={errors.consultation_fee}
-                placeholder="0.00"
-              />
-              
-              <FormInput
-                label="Education"
-                value={formData.education}
-                onChange={(e) => handleChange('education', e.target.value)}
-                error={errors.education}
-                placeholder="Medical School, Residency"
-              />
-              
-              <FormSelect
-                label="Status"
-                value={formData.status}
-                onChange={(e) => handleChange('status', e.target.value)}
-                options={[
-                  { value: 'active', label: 'Active' },
-                  { value: 'inactive', label: 'Inactive' },
-                  { value: 'pending', label: 'Pending' },
-                ]}
-                error={errors.status}
-              />
-            </div>
-            
-            <FormTextarea
-              label="Bio"
-              value={formData.bio}
-              onChange={(e) => handleChange('bio', e.target.value)}
-              error={errors.bio}
-              placeholder="Brief biography and professional background"
-              rows={4}
-            />
-
-            <div className="flex items-center justify-end space-x-3 pt-4 border-t">
-              <FormButton
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-              >
-                Cancel
-              </FormButton>
-              <FormButton type="submit" loading={isLoading}>
-                {doctor ? 'Update Doctor' : 'Create Doctor'}
-              </FormButton>
-            </div>
-          </form>
+    <Modal
+      isOpen={isOpen}
+      onClose={onCancel}
+      title={doctor ? 'Edit Doctor' : 'Add New Doctor'}
+      size="lg"
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormInput
+            label="First Name"
+            value={formData.first_name}
+            onChange={(e) => handleChange('first_name', e.target.value)}
+            error={errors.first_name}
+            required
+          />
+          
+          <FormInput
+            label="Last Name"
+            value={formData.last_name}
+            onChange={(e) => handleChange('last_name', e.target.value)}
+            error={errors.last_name}
+            required
+          />
+          
+          <FormInput
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            error={errors.email}
+            required
+          />
+          
+          <FormInput
+            label="Phone"
+            value={formData.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
+            error={errors.phone}
+            required
+          />
+          
+          <FormSelect
+            label="Clinic"
+            value={formData.clinic_id}
+            onChange={(e) => handleChange('clinic_id', e.target.value)}
+            options={clinicOptions}
+            error={errors.clinic_id}
+            required
+          />
+          
+          <FormSelect
+            label="Hospital"
+            value={formData.hospital_id}
+            onChange={(e) => handleChange('hospital_id', e.target.value)}
+            options={hospitalOptions}
+            error={errors.hospital_id}
+          />
+          
+          <FormInput
+            label="Specialization"
+            value={formData.specialization}
+            onChange={(e) => handleChange('specialization', e.target.value)}
+            error={errors.specialization}
+            required
+            placeholder="e.g., Cardiology, Neurology"
+          />
+          
+          <FormInput
+            label="License Number"
+            value={formData.license_number}
+            onChange={(e) => handleChange('license_number', e.target.value)}
+            error={errors.license_number}
+            required
+          />
+          
+          <FormInput
+            label="Experience (Years)"
+            type="number"
+            value={formData.experience_years}
+            onChange={(e) => handleChange('experience_years', e.target.value)}
+            error={errors.experience_years}
+            min="0"
+            max="50"
+          />
+          
+          <FormInput
+            label="Consultation Fee"
+            type="number"
+            step="0.01"
+            value={formData.consultation_fee}
+            onChange={(e) => handleChange('consultation_fee', e.target.value)}
+            error={errors.consultation_fee}
+            placeholder="0.00"
+          />
+          
+          <FormInput
+            label="Education"
+            value={formData.education}
+            onChange={(e) => handleChange('education', e.target.value)}
+            error={errors.education}
+            placeholder="Medical School, Residency"
+          />
+          
+          <FormSelect
+            label="Status"
+            value={formData.status}
+            onChange={(e) => handleChange('status', e.target.value)}
+            options={[
+              { value: 'active', label: 'Active' },
+              { value: 'inactive', label: 'Inactive' },
+              { value: 'pending', label: 'Pending' },
+            ]}
+            error={errors.status}
+          />
         </div>
-      </div>
-    </div>
+        
+        <FormTextarea
+          label="Bio"
+          value={formData.bio}
+          onChange={(e) => handleChange('bio', e.target.value)}
+          error={errors.bio}
+          placeholder="Brief biography and professional background"
+          rows={4}
+        />
+
+        <div className="flex items-center justify-end space-x-3 pt-4 border-t">
+          <FormButton
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+          >
+            Cancel
+          </FormButton>
+          <FormButton type="submit" loading={isLoading}>
+            {doctor ? 'Update Doctor' : 'Create Doctor'}
+          </FormButton>
+        </div>
+      </form>
+    </Modal>
   );
 };
 
@@ -379,22 +404,25 @@ const Doctors = () => {
   const [clinicFilter, setClinicFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [doctorToDelete, setDoctorToDelete] = useState(null);
 
   const { data: doctorsResponse, isLoading, error } = useDoctors();
   const { data: clinicsResponse } = useClinics();
   const createDoctorMutation = useCreateDoctor();
   const updateDoctorMutation = useUpdateDoctor();
   const deleteDoctorMutation = useDeleteDoctor();
+  const toast = useToastContext();
 
   const doctors = doctorsResponse?.data || [];
   const clinics = clinicsResponse?.data || [];
 
   const filteredDoctors = doctors.filter(doctor => {
     const matchesSearch = 
-      doctor.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doctor.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      doctor.email.toLowerCase().includes(searchTerm.toLowerCase());
+      (doctor.first_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (doctor.last_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (doctor.specialization?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (doctor.email?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     const matchesStatus = !statusFilter || doctor.status === statusFilter;
     const matchesSpecialization = !specializationFilter || doctor.specialization === specializationFilter;
     const matchesClinic = !clinicFilter || doctor.clinic_id === parseInt(clinicFilter);
@@ -408,19 +436,33 @@ const Doctors = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (doctor) => {
-    if (window.confirm(`Are you sure you want to delete Dr. ${doctor.first_name} ${doctor.last_name}?`)) {
-      try {
-        await deleteDoctorMutation.mutateAsync(doctor.id);
-      } catch (error) {
-        console.error('Failed to delete doctor:', error);
-      }
+  const handleDelete = (doctor) => {
+    setDoctorToDelete(doctor);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!doctorToDelete) return;
+    
+    try {
+      await deleteDoctorMutation.mutateAsync(doctorToDelete.id);
+      toast.success('Success', 'Doctor deleted successfully');
+      setShowDeleteConfirm(false);
+      setDoctorToDelete(null);
+    } catch (error) {
+      console.error('Failed to delete doctor:', error);
+      toast.error('Error', 'Failed to delete doctor. Please try again.');
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setDoctorToDelete(null);
   };
 
   const handleView = (doctor) => {
     // TODO: Implement view details modal
-    console.log('View doctor:', doctor);
+    toast.info('Info', `Viewing doctor: ${doctor.first_name} ${doctor.last_name}`);
   };
 
   const handleSave = async (formData) => {
@@ -430,13 +472,22 @@ const Doctors = () => {
           id: editingDoctor.id, 
           data: formData 
         });
+        toast.success('Success', 'Doctor updated successfully');
       } else {
         await createDoctorMutation.mutateAsync(formData);
+        toast.success('Success', 'Doctor created successfully');
       }
       setShowForm(false);
       setEditingDoctor(null);
     } catch (error) {
       console.error('Failed to save doctor:', error);
+      
+      // Show detailed validation errors if available
+      if (error.message && error.message !== 'Request failed') {
+        toast.error('Validation Error', error.message);
+      } else {
+        toast.error('Error', 'Failed to save doctor. Please try again.');
+      }
     }
   };
 
@@ -564,6 +615,19 @@ const Doctors = () => {
         onCancel={handleCancel}
         isOpen={showForm}
         isLoading={createDoctorMutation.isLoading || updateDoctorMutation.isLoading}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        title="Delete Doctor"
+        message={`Are you sure you want to delete Dr. ${doctorToDelete?.first_name} ${doctorToDelete?.last_name}? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={deleteDoctorMutation.isLoading}
       />
     </div>
   );

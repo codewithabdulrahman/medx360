@@ -7,19 +7,15 @@ const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Debug logging
-  console.log('Layout component rendering');
-  console.log('Current path:', location.pathname);
-  
-  // Temporarily disable setup status check for debugging
-  // const { data: setupStatus, isLoading } = useSetupStatus();
+  // Check setup status and redirect if needed
+  const { data: setupStatus, isLoading } = useSetupStatus();
 
   // Redirect to onboarding if setup is not completed
-  // useEffect(() => {
-  //   if (!isLoading && setupStatus && !setupStatus.is_completed) {
-  //     navigate('/onboarding');
-  //   }
-  // }, [setupStatus, isLoading, navigate]);
+  useEffect(() => {
+    if (!isLoading && setupStatus && !setupStatus.is_completed) {
+      navigate('/onboarding');
+    }
+  }, [setupStatus, isLoading, navigate]);
 
   // Don't show header on onboarding page
   const showHeader = location.pathname !== '/onboarding';

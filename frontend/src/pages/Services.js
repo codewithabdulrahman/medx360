@@ -30,6 +30,9 @@ import {
   FormSelect,
   FormTextarea 
 } from '@components/forms';
+import Modal from '@components/Modal';
+import ConfirmationModal from '@components/ConfirmationModal';
+import { useToastContext } from '@components/ToastContext';
 
 const ServiceCard = ({ service, onEdit, onDelete, onView }) => {
   const statusColors = {
@@ -130,6 +133,34 @@ const ServiceForm = ({ service, onSave, onCancel, isOpen, isLoading }) => {
 
   const [errors, setErrors] = useState({});
 
+  // Reset form when service changes
+  React.useEffect(() => {
+    if (service) {
+      setFormData({
+        clinic_id: service.clinic_id || '',
+        hospital_id: service.hospital_id || '',
+        name: service.name || '',
+        description: service.description || '',
+        duration_minutes: service.duration_minutes || '',
+        price: service.price || '',
+        category: service.category || '',
+        status: service.status || 'active',
+      });
+    } else {
+      setFormData({
+        clinic_id: '',
+        hospital_id: '',
+        name: '',
+        description: '',
+        duration_minutes: '',
+        price: '',
+        category: '',
+        status: 'active',
+      });
+    }
+    setErrors({});
+  }, [service]);
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -171,8 +202,6 @@ const ServiceForm = ({ service, onSave, onCancel, isOpen, isLoading }) => {
     }
   };
 
-  if (!isOpen) return null;
-
   const clinicOptions = clinics.map(clinic => ({
     value: clinic.id,
     label: clinic.name
@@ -195,120 +224,106 @@ const ServiceForm = ({ service, onSave, onCancel, isOpen, isLoading }) => {
   ];
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div className="mt-3">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              {service ? 'Edit Service' : 'Add New Service'}
-            </h3>
-            <button
-              onClick={onCancel}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <span className="sr-only">Close</span>
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormInput
-                label="Service Name"
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                error={errors.name}
-                required
-                placeholder="e.g., General Consultation"
-              />
-              
-              <FormSelect
-                label="Clinic"
-                value={formData.clinic_id}
-                onChange={(e) => handleChange('clinic_id', e.target.value)}
-                options={clinicOptions}
-                error={errors.clinic_id}
-                required
-              />
-              
-              <FormSelect
-                label="Hospital"
-                value={formData.hospital_id}
-                onChange={(e) => handleChange('hospital_id', e.target.value)}
-                options={hospitalOptions}
-                error={errors.hospital_id}
-              />
-              
-              <FormSelect
-                label="Category"
-                value={formData.category}
-                onChange={(e) => handleChange('category', e.target.value)}
-                options={categoryOptions}
-                error={errors.category}
-              />
-              
-              <FormInput
-                label="Duration (Minutes)"
-                type="number"
-                value={formData.duration_minutes}
-                onChange={(e) => handleChange('duration_minutes', e.target.value)}
-                error={errors.duration_minutes}
-                required
-                min="1"
-                max="480"
-              />
-              
-              <FormInput
-                label="Price"
-                type="number"
-                step="0.01"
-                value={formData.price}
-                onChange={(e) => handleChange('price', e.target.value)}
-                error={errors.price}
-                required
-                min="0"
-                placeholder="0.00"
-              />
-              
-              <FormSelect
-                label="Status"
-                value={formData.status}
-                onChange={(e) => handleChange('status', e.target.value)}
-                options={[
-                  { value: 'active', label: 'Active' },
-                  { value: 'inactive', label: 'Inactive' },
-                ]}
-                error={errors.status}
-              />
-            </div>
-            
-            <FormTextarea
-              label="Description"
-              value={formData.description}
-              onChange={(e) => handleChange('description', e.target.value)}
-              error={errors.description}
-              placeholder="Brief description of the service"
-              rows={3}
-            />
-
-            <div className="flex items-center justify-end space-x-3 pt-4 border-t">
-              <FormButton
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-              >
-                Cancel
-              </FormButton>
-              <FormButton type="submit" loading={isLoading}>
-                {service ? 'Update Service' : 'Create Service'}
-              </FormButton>
-            </div>
-          </form>
+    <Modal
+      isOpen={isOpen}
+      onClose={onCancel}
+      title={service ? 'Edit Service' : 'Add New Service'}
+      size="lg"
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormInput
+            label="Service Name"
+            value={formData.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+            error={errors.name}
+            required
+            placeholder="e.g., General Consultation"
+          />
+          
+          <FormSelect
+            label="Clinic"
+            value={formData.clinic_id}
+            onChange={(e) => handleChange('clinic_id', e.target.value)}
+            options={clinicOptions}
+            error={errors.clinic_id}
+            required
+          />
+          
+          <FormSelect
+            label="Hospital"
+            value={formData.hospital_id}
+            onChange={(e) => handleChange('hospital_id', e.target.value)}
+            options={hospitalOptions}
+            error={errors.hospital_id}
+          />
+          
+          <FormSelect
+            label="Category"
+            value={formData.category}
+            onChange={(e) => handleChange('category', e.target.value)}
+            options={categoryOptions}
+            error={errors.category}
+          />
+          
+          <FormInput
+            label="Duration (Minutes)"
+            type="number"
+            value={formData.duration_minutes}
+            onChange={(e) => handleChange('duration_minutes', e.target.value)}
+            error={errors.duration_minutes}
+            required
+            min="1"
+            max="480"
+          />
+          
+          <FormInput
+            label="Price"
+            type="number"
+            step="0.01"
+            value={formData.price}
+            onChange={(e) => handleChange('price', e.target.value)}
+            error={errors.price}
+            required
+            min="0"
+            placeholder="0.00"
+          />
+          
+          <FormSelect
+            label="Status"
+            value={formData.status}
+            onChange={(e) => handleChange('status', e.target.value)}
+            options={[
+              { value: 'active', label: 'Active' },
+              { value: 'inactive', label: 'Inactive' },
+            ]}
+            error={errors.status}
+          />
         </div>
-      </div>
-    </div>
+        
+        <FormTextarea
+          label="Description"
+          value={formData.description}
+          onChange={(e) => handleChange('description', e.target.value)}
+          error={errors.description}
+          placeholder="Brief description of the service"
+          rows={3}
+        />
+
+        <div className="flex items-center justify-end space-x-3 pt-4 border-t">
+          <FormButton
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+          >
+            Cancel
+          </FormButton>
+          <FormButton type="submit" loading={isLoading}>
+            {service ? 'Update Service' : 'Create Service'}
+          </FormButton>
+        </div>
+      </form>
+    </Modal>
   );
 };
 
@@ -319,21 +334,24 @@ const Services = () => {
   const [clinicFilter, setClinicFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingService, setEditingService] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [serviceToDelete, setServiceToDelete] = useState(null);
 
   const { data: servicesResponse, isLoading, error } = useServices();
   const { data: clinicsResponse } = useClinics();
   const createServiceMutation = useCreateService();
   const updateServiceMutation = useUpdateService();
   const deleteServiceMutation = useDeleteService();
+  const toast = useToastContext();
 
   const services = servicesResponse?.data || [];
   const clinics = clinicsResponse?.data || [];
 
   const filteredServices = services.filter(service => {
     const matchesSearch = 
-      service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.category.toLowerCase().includes(searchTerm.toLowerCase());
+      (service.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (service.description?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (service.category?.toLowerCase() || '').includes(searchTerm.toLowerCase());
     const matchesStatus = !statusFilter || service.status === statusFilter;
     const matchesCategory = !categoryFilter || service.category === categoryFilter;
     const matchesClinic = !clinicFilter || service.clinic_id === parseInt(clinicFilter);
@@ -347,19 +365,33 @@ const Services = () => {
     setShowForm(true);
   };
 
-  const handleDelete = async (service) => {
-    if (window.confirm(`Are you sure you want to delete "${service.name}"?`)) {
-      try {
-        await deleteServiceMutation.mutateAsync(service.id);
-      } catch (error) {
-        console.error('Failed to delete service:', error);
-      }
+  const handleDelete = (service) => {
+    setServiceToDelete(service);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!serviceToDelete) return;
+    
+    try {
+      await deleteServiceMutation.mutateAsync(serviceToDelete.id);
+      toast.success('Success', 'Service deleted successfully');
+      setShowDeleteConfirm(false);
+      setServiceToDelete(null);
+    } catch (error) {
+      console.error('Failed to delete service:', error);
+      toast.error('Error', 'Failed to delete service. Please try again.');
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setServiceToDelete(null);
   };
 
   const handleView = (service) => {
     // TODO: Implement view details modal
-    console.log('View service:', service);
+    toast.info('Info', `Viewing service: ${service.name}`);
   };
 
   const handleSave = async (formData) => {
@@ -369,13 +401,22 @@ const Services = () => {
           id: editingService.id, 
           data: formData 
         });
+        toast.success('Success', 'Service updated successfully');
       } else {
         await createServiceMutation.mutateAsync(formData);
+        toast.success('Success', 'Service created successfully');
       }
       setShowForm(false);
       setEditingService(null);
     } catch (error) {
       console.error('Failed to save service:', error);
+      
+      // Show detailed validation errors if available
+      if (error.message && error.message !== 'Request failed') {
+        toast.error('Validation Error', error.message);
+      } else {
+        toast.error('Error', 'Failed to save service. Please try again.');
+      }
     }
   };
 
@@ -502,6 +543,19 @@ const Services = () => {
         onCancel={handleCancel}
         isOpen={showForm}
         isLoading={createServiceMutation.isLoading || updateServiceMutation.isLoading}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        title="Delete Service"
+        message={`Are you sure you want to delete "${serviceToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={deleteServiceMutation.isLoading}
       />
     </div>
   );

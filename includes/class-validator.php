@@ -13,13 +13,20 @@ class MedX360_Validator {
      * Validate email
      */
     public static function validate_email($email) {
-        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+        if (empty($email)) {
+            return false;
+        }
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false && strlen($email) <= 254;
     }
     
     /**
      * Validate phone number
      */
     public static function validate_phone($phone) {
+        if (empty($phone)) {
+            return false;
+        }
+        
         // Remove all non-digit characters
         $phone = preg_replace('/[^0-9]/', '', $phone);
         
@@ -31,6 +38,10 @@ class MedX360_Validator {
      * Validate date
      */
     public static function validate_date($date, $format = 'Y-m-d') {
+        if (empty($date)) {
+            return false;
+        }
+        
         $d = DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) === $date;
     }
@@ -39,6 +50,10 @@ class MedX360_Validator {
      * Validate time
      */
     public static function validate_time($time, $format = 'H:i:s') {
+        if (empty($time)) {
+            return false;
+        }
+        
         $d = DateTime::createFromFormat($format, $time);
         return $d && $d->format($format) === $time;
     }
@@ -47,13 +62,32 @@ class MedX360_Validator {
      * Validate URL
      */
     public static function validate_url($url) {
-        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+        if (empty($url)) {
+            return false;
+        }
+        
+        // Add protocol if missing
+        if (!preg_match('/^https?:\/\//', $url)) {
+            $url = 'https://' . $url;
+        }
+        
+        return filter_var($url, FILTER_VALIDATE_URL) !== false && strlen($url) <= 2048;
     }
     
     /**
      * Validate slug
      */
     public static function validate_slug($slug) {
+        if (empty($slug)) {
+            return false;
+        }
+        
+        // Check length (max 200 characters)
+        if (strlen($slug) > 200) {
+            return false;
+        }
+        
+        // Check format: lowercase letters, numbers, and hyphens only
         return preg_match('/^[a-z0-9-]+$/', $slug) === 1;
     }
     
@@ -61,21 +95,39 @@ class MedX360_Validator {
      * Validate price
      */
     public static function validate_price($price) {
-        return is_numeric($price) && $price >= 0;
+        if (!is_numeric($price)) {
+            return false;
+        }
+        
+        $price = floatval($price);
+        
+        // Check if price is non-negative and within reasonable limits
+        return $price >= 0 && $price <= 999999.99;
     }
     
     /**
      * Validate duration
      */
     public static function validate_duration($duration) {
-        return is_numeric($duration) && $duration > 0 && $duration <= 1440; // Max 24 hours
+        if (!is_numeric($duration)) {
+            return false;
+        }
+        
+        $duration = intval($duration);
+        
+        // Check if duration is positive and within reasonable limits (max 24 hours)
+        return $duration > 0 && $duration <= 1440;
     }
     
     /**
      * Validate status
      */
     public static function validate_status($status, $allowed_statuses) {
-        return in_array($status, $allowed_statuses);
+        if (empty($status) || !is_array($allowed_statuses)) {
+            return false;
+        }
+        
+        return in_array($status, $allowed_statuses, true);
     }
     
     /**
@@ -84,12 +136,22 @@ class MedX360_Validator {
     public static function validate_clinic_data($data) {
         $errors = array();
         
+        if (!is_array($data)) {
+            $errors[] = __('Invalid data format', 'medx360');
+            return $errors;
+        }
+        
         // Required fields
         $required_fields = array('name', 'slug');
         foreach ($required_fields as $field) {
             if (empty($data[$field])) {
                 $errors[] = sprintf(__('%s is required', 'medx360'), ucfirst(str_replace('_', ' ', $field)));
             }
+        }
+        
+        // Validate name length
+        if (!empty($data['name']) && strlen($data['name']) > 255) {
+            $errors[] = __('Name must be less than 255 characters', 'medx360');
         }
         
         // Validate slug

@@ -30,6 +30,7 @@ import {
   FormSelect,
   FormTextarea 
 } from '@components/forms';
+import { useToastContext } from '@components/ToastContext';
 
 const StepIndicator = ({ currentStep, totalSteps, steps }) => {
   return (
@@ -167,6 +168,13 @@ const ClinicSetupStep = ({ onNext, onPrevious }) => {
         onNext();
       } catch (error) {
         console.error('Failed to create clinic:', error);
+        
+        // Show detailed validation errors if available
+        if (error.message && error.message !== 'Request failed') {
+          toast.error('Validation Error', error.message);
+        } else {
+          toast.error('Error', 'Failed to create clinic. Please try again.');
+        }
       }
     }
   };
@@ -328,6 +336,13 @@ const ServicesSetupStep = ({ onNext, onPrevious }) => {
       onNext();
     } catch (error) {
       console.error('Failed to create services:', error);
+      
+      // Show detailed validation errors if available
+      if (error.message && error.message !== 'Request failed') {
+        toast.error('Validation Error', error.message);
+      } else {
+        toast.error('Error', 'Failed to create services. Please try again.');
+      }
     }
   };
 
@@ -444,6 +459,13 @@ const CompletionStep = ({ onComplete }) => {
       onComplete();
     } catch (error) {
       console.error('Failed to complete onboarding:', error);
+      
+      // Show detailed validation errors if available
+      if (error.message && error.message !== 'Request failed') {
+        toast.error('Validation Error', error.message);
+      } else {
+        toast.error('Error', 'Failed to complete onboarding. Please try again.');
+      }
     }
   };
 
@@ -506,6 +528,7 @@ const CompletionStep = ({ onComplete }) => {
 const Onboarding = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
+  const toast = useToastContext();
 
   const { data: setupStatus, isLoading } = useSetupStatus();
   const { data: steps } = useOnboardingSteps();

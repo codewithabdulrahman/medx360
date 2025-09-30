@@ -161,6 +161,11 @@ class MedX360_Clinics_AJAX extends MedX360_AJAX_Controller {
         $table_name = $this->get_table_name('clinics');
         $data = $this->get_post_data();
         
+        // Normalize website URL (add protocol if missing)
+        if (!empty($data['website']) && !preg_match('/^https?:\/\//', $data['website'])) {
+            $data['website'] = 'https://' . $data['website'];
+        }
+        
         // Validate data
         $errors = MedX360_Validator::validate_clinic_data($data);
         if (!empty($errors)) {
@@ -244,6 +249,11 @@ class MedX360_Clinics_AJAX extends MedX360_AJAX_Controller {
         
         if (!$existing_clinic) {
             $this->format_error_response(__('Clinic not found', 'medx360'), 'clinic_not_found', 404);
+        }
+        
+        // Normalize website URL (add protocol if missing)
+        if (!empty($data['website']) && !preg_match('/^https?:\/\//', $data['website'])) {
+            $data['website'] = 'https://' . $data['website'];
         }
         
         // Validate data

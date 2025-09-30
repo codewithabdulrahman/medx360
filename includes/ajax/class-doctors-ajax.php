@@ -10,31 +10,42 @@ if (!defined('ABSPATH')) {
 class MedX360_Doctors_AJAX extends MedX360_AJAX_Controller {
     
     public function register_actions() {
-        // GET endpoints
-        $this->register_ajax_action('get_doctors', array($this, 'get_doctors'));
-        $this->register_ajax_action('get_doctor', array($this, 'get_doctor'));
-        $this->register_ajax_action('get_doctors_by_clinic', array($this, 'get_doctors_by_clinic'));
-        $this->register_ajax_action('get_doctors_by_hospital', array($this, 'get_doctors_by_hospital'));
-        $this->register_ajax_action('get_doctor_schedule', array($this, 'get_doctor_schedule'));
-        $this->register_ajax_action('get_doctor_availability', array($this, 'get_doctor_availability'));
+        $actions = array(
+            // GET endpoints
+            'get_doctors' => array($this, 'get_doctors'),
+            'get_doctor' => array($this, 'get_doctor'),
+            'get_doctors_by_clinic' => array($this, 'get_doctors_by_clinic'),
+            'get_doctors_by_hospital' => array($this, 'get_doctors_by_hospital'),
+            'get_doctor_schedule' => array($this, 'get_doctor_schedule'),
+            'get_doctor_availability' => array($this, 'get_doctor_availability'),
+            
+            // POST endpoints
+            'create_doctor' => array($this, 'create_doctor'),
+            'create_doctor_schedule' => array($this, 'create_doctor_schedule'),
+            'create_doctor_availability' => array($this, 'create_doctor_availability'),
+            
+            // PUT endpoints
+            'update_doctor' => array($this, 'update_doctor'),
+            'update_doctor_schedule' => array($this, 'update_doctor_schedule'),
+            
+            // DELETE endpoints
+            'delete_doctor' => array($this, 'delete_doctor'),
+        );
         
-        // POST endpoints
-        $this->register_ajax_action('create_doctor', array($this, 'create_doctor'));
-        $this->register_ajax_action('create_doctor_schedule', array($this, 'create_doctor_schedule'));
-        $this->register_ajax_action('create_doctor_availability', array($this, 'create_doctor_availability'));
-        
-        // PUT endpoints
-        $this->register_ajax_action('update_doctor', array($this, 'update_doctor'));
-        $this->register_ajax_action('update_doctor_schedule', array($this, 'update_doctor_schedule'));
-        
-        // DELETE endpoints
-        $this->register_ajax_action('delete_doctor', array($this, 'delete_doctor'));
+        foreach ($actions as $action => $callback) {
+            $this->register_ajax_action($action, $callback);
+        }
     }
     
     /**
      * Get doctors collection
      */
     public function get_doctors() {
+        // Verify nonce
+        if (!$this->verify_nonce()) {
+            $this->format_error_response(__('Invalid nonce', 'medx360'), 'invalid_nonce', 403);
+        }
+        
         // Check permissions
         if (!$this->check_read_permission()) {
             $this->format_error_response(__('Permission denied', 'medx360'), 'permission_denied', 403);

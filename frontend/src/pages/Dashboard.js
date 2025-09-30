@@ -139,28 +139,28 @@ const Dashboard = () => {
       description: 'Create a new medical clinic',
       icon: Building2,
       color: 'blue',
-      onClick: () => console.log('Add clinic'),
+      onClick: () => window.location.hash = '#/clinics',
     },
     {
       title: 'Add Doctor',
       description: 'Register a new doctor',
       icon: UserCheck,
       color: 'green',
-      onClick: () => console.log('Add doctor'),
+      onClick: () => window.location.hash = '#/doctors',
     },
     {
       title: 'Create Booking',
       description: 'Schedule an appointment',
       icon: Calendar,
       color: 'purple',
-      onClick: () => console.log('Create booking'),
+      onClick: () => window.location.hash = '#/bookings',
     },
     {
       title: 'Add Service',
       description: 'Define a new medical service',
       icon: Stethoscope,
       color: 'indigo',
-      onClick: () => console.log('Add service'),
+      onClick: () => window.location.hash = '#/services',
     },
   ];
 

@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<ruleset name="MedX360">
+    <description>WordPress Coding Standards for MedX360 Plugin</description>
+
+    <!-- What to scan -->
+    <file>.</file>
+
+    <!-- Exclude vendor and node_modules -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/frontend/dist/*</exclude-pattern>
+    <exclude-pattern>*/frontend/node_modules/*</exclude-pattern>
+
+    <!-- How to scan -->
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg value="p"/>
+
+    <!-- Rules: Check WordPress Coding Standards -->
+    <rule ref="WordPress">
+        <!-- Allow short array syntax -->
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+        
+        <!-- Allow camelCase for JavaScript variables -->
+        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
+        
+        <!-- Allow camelCase for function names in some contexts -->
+        <exclude name="WordPress.NamingConventions.ValidFunctionName"/>
+        
+        <!-- Allow camelCase for class names in some contexts -->
+        <exclude name="WordPress.NamingConventions.ValidClassName"/>
+    </rule>
+
+    <!-- Check PHP version compatibility -->
+    <config name="minimum_supported_wp_version" value="5.0"/>
+
+    <!-- Set the testVersion to check against for PHP cross-version compatibility -->
+    <config name="testVersion" value="7.4-"/>
+
+    <!-- Allow for camelCase variables in JavaScript context -->
+    <rule ref="WordPress.NamingConventions.ValidVariableName">
+        <properties>
+            <property name="customPropertiesWhitelist" type="array">
+                <element value="ajaxURL"/>
+                <element value="windowMedx360"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Set text domain -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="medx360"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Allow for camelCase in AJAX action names -->
+    <rule ref="WordPress.NamingConventions.ValidHookName">
+        <properties>
+            <property name="customPropertiesWhitelist" type="array">
+                <element value="medx360_*"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Exclude some rules for better compatibility -->
+    <rule ref="WordPress.PHP.YodaConditions">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Allow for camelCase in database column names -->
+    <rule ref="WordPress.DB.PreparedSQL">
+        <properties>
+            <property name="customPropertiesWhitelist" type="array">
+                <element value="clinic_id"/>
+                <element value="hospital_id"/>
+                <element value="doctor_id"/>
+                <element value="service_id"/>
+                <element value="booking_id"/>
+                <element value="patient_name"/>
+                <element value="patient_email"/>
+                <element value="patient_phone"/>
+                <element value="appointment_date"/>
+                <element value="appointment_time"/>
+                <element value="consultation_fee"/>
+                <element value="experience_years"/>
+                <element value="license_number"/>
+                <element value="profile_image"/>
+                <element value="logo_url"/>
+                <element value="postal_code"/>
+                <element value="created_at"/>
+                <element value="updated_at"/>
+            </property>
+        </properties>
+    </rule>
+</ruleset>
