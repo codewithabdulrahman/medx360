@@ -272,12 +272,44 @@ class MedX360_Payments_AJAX extends MedX360_AJAX_Controller {
         // Add update timestamp
         $sanitized_data['updated_at'] = current_time('mysql');
         
+        // Build dynamic formats for payment update
+        $field_types = array(
+            'booking_id' => 'int',
+            'amount' => 'float',
+            'currency' => 'text',
+            'payment_method' => 'text',
+            'payment_gateway' => 'text',
+            'transaction_id' => 'text',
+            'status' => 'text',
+            'gateway_response' => 'json'
+        );
+
+        $formats = array();
+        foreach ($field_types as $field => $type) {
+            if (array_key_exists($field, $sanitized_data)) {
+                switch ($type) {
+                    case 'int':
+                        $formats[] = '%d';
+                        break;
+                    case 'float':
+                        $formats[] = '%f';
+                        break;
+                    default:
+                        $formats[] = '%s';
+                }
+            }
+        }
+
+        if (array_key_exists('updated_at', $sanitized_data)) {
+            $formats[] = '%s';
+        }
+
         // Update payment
         $result = $wpdb->update(
             $table_name,
             $sanitized_data,
             array('id' => $payment_id),
-            array('%d', '%f', '%s', '%s', '%s', '%s', '%s', '%s', '%s'),
+            $formats,
             array('%d')
         );
         

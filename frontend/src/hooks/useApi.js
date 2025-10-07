@@ -408,6 +408,17 @@ export const useUpdatePayment = () => {
   });
 };
 
+export const useDeletePayment = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id) => api.deletePayment(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['payments'] });
+    },
+  });
+};
+
 export const useRefundPayment = () => {
   const queryClient = useQueryClient();
   
@@ -555,6 +566,28 @@ export const useResetOnboarding = () => {
     mutationFn: () => api.resetOnboarding(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['onboarding'] });
+    },
+  });
+};
+
+// ==================== SETTINGS HOOKS ====================
+
+export const useSettings = () => {
+  return useQuery({
+    queryKey: ['settings'],
+    queryFn: () => api.getSettings(),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+export const useSaveSettings = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data) => api.saveSettings(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['settings'] });
+      return data;
     },
   });
 };

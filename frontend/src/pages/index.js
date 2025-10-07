@@ -4,10 +4,9 @@ export { default as Clinics } from './Clinics';
 export { default as Hospitals } from './Hospitals';
 export { default as Doctors } from './Doctors';
 export { default as Services } from './Services';
-export { 
-  Staff, 
-  Bookings, 
-  Consultations, 
-  Payments, 
-  SettingsPage as Settings
-} from './PlaceholderPages';
+export { default as Staff } from './Staff';
+export { default as Bookings } from './Bookings';
+export { default as Consultations } from './Consultations';
+export { default as Payments } from './Payments';
+export { Consultations as _consultations_placeholder, SettingsPage as SettingsPlaceholder } from './PlaceholderPages';
+export { default as Settings } from './Settings';

@@ -432,13 +432,27 @@ class MedX360_Doctors_AJAX extends MedX360_AJAX_Controller {
         
         // Add update timestamp
         $sanitized_data['updated_at'] = current_time('mysql');
-        
+
+        // Build formats dynamically
+        $int_fields = array('clinic_id', 'hospital_id', 'user_id', 'experience_years');
+        $float_fields = array('consultation_fee');
+        $formats = array();
+        foreach ($sanitized_data as $key => $val) {
+            if (in_array($key, $int_fields, true)) {
+                $formats[] = '%d';
+            } elseif (in_array($key, $float_fields, true)) {
+                $formats[] = '%f';
+            } else {
+                $formats[] = '%s';
+            }
+        }
+
         // Update doctor
         $result = $wpdb->update(
             $table_name,
             $sanitized_data,
             array('id' => $doctor_id),
-            array('%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%f', '%s', '%s', '%s'),
+            $formats,
             array('%d')
         );
         
@@ -599,13 +613,25 @@ class MedX360_Doctors_AJAX extends MedX360_AJAX_Controller {
         ));
         
         $sanitized_data['updated_at'] = current_time('mysql');
-        
+
+        // Build formats for schedules update
+        $formats = array();
+        foreach ($sanitized_data as $key => $val) {
+            if ($key === 'day_of_week' || $key === 'is_available') {
+                $formats[] = '%d';
+            } elseif ($key === 'start_time' || $key === 'end_time') {
+                $formats[] = '%s';
+            } else {
+                $formats[] = '%s';
+            }
+        }
+
         // Update all schedules for this doctor
         $result = $wpdb->update(
             $schedules_table,
             $sanitized_data,
             array('doctor_id' => $doctor_id),
-            array('%d', '%s', '%s', '%d', '%s'),
+            $formats,
             array('%d')
         );
         

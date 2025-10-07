@@ -206,15 +206,15 @@ class MedX360API {
   }
 
   async createStaffMember(data) {
-    return this.ajaxRequest('medx360_create_staff_member', data);
+    return this.ajaxRequest('medx360_create_staff', data);
   }
 
   async updateStaffMember(id, data) {
-    return this.ajaxRequest('medx360_update_staff_member', { id, ...data });
+    return this.ajaxRequest('medx360_update_staff', { id, ...data });
   }
 
   async deleteStaffMember(id) {
-    return this.ajaxRequest('medx360_delete_staff_member', { id });
+    return this.ajaxRequest('medx360_delete_staff', { id });
   }
 
   async getStaffByClinic(clinicId) {
@@ -277,6 +277,10 @@ class MedX360API {
     return this.ajaxRequest('medx360_update_payment', { id, ...data });
   }
 
+  async deletePayment(id) {
+    return this.ajaxRequest('medx360_delete_payment', { id });
+  }
+
   async getPaymentsByBooking(bookingId) {
     return this.ajaxRequest('medx360_get_payments_by_booking', { booking_id: bookingId });
   }
@@ -335,6 +339,16 @@ class MedX360API {
 
   async getOnboardingStatistics() {
     return this.ajaxRequest('medx360_get_onboarding_statistics');
+  }
+
+  // ==================== SETTINGS API ====================
+
+  async getSettings() {
+    return this.ajaxRequest('medx360_get_settings');
+  }
+
+  async saveSettings(data) {
+    return this.ajaxRequest('medx360_save_settings', data);
   }
 
   async createDefaultClinic(data) {

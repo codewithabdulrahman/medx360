@@ -134,15 +134,20 @@ class MedX360_Onboarding_AJAX extends MedX360_AJAX_Controller {
         $clinics_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}medx360_clinics");
         $hospitals_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}medx360_hospitals");
         $doctors_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}medx360_doctors");
-        $services_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}medx360_services");
-        $staff_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}medx360_staff");
+    $services_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}medx360_services");
+    $staff_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}medx360_staff");
+    // Booking and revenue stats
+    $bookings_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}medx360_bookings");
+    $total_revenue = $wpdb->get_var("SELECT COALESCE(SUM(amount), 0) FROM {$wpdb->prefix}medx360_payments WHERE status = 'completed'");
         
         $response = array(
             'clinics_count' => intval($clinics_count),
             'hospitals_count' => intval($hospitals_count),
             'doctors_count' => intval($doctors_count),
             'services_count' => intval($services_count),
-            'staff_count' => intval($staff_count)
+            'staff_count' => intval($staff_count),
+            'bookings_count' => intval($bookings_count),
+            'total_revenue' => floatval($total_revenue)
         );
         
         $this->format_response($response);
