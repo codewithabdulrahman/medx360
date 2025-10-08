@@ -16,6 +16,7 @@ import {
   useClinics,
   useHospitals
 } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import {
   FormInput,
   FormButton,
@@ -183,6 +184,7 @@ const StaffForm = ({ staff, onSave, onCancel, isOpen, isLoading }) => {
 };
 
 const Staff = () => {
+  const { addToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [clinicFilter, setClinicFilter] = useState('');
@@ -215,10 +217,12 @@ const Staff = () => {
     if (!staffToDelete) return;
     try {
       await deleteMutation.mutateAsync(staffToDelete.id);
+      addToast({ type: 'success', title: 'Deleted', message: 'Staff deleted successfully' });
       setShowDeleteConfirm(false);
       setStaffToDelete(null);
     } catch (err) {
       console.error('Failed to delete staff:', err);
+      addToast({ type: 'error', title: 'Error', message: 'Failed to delete staff. Please try again.' });
     }
   };
 
@@ -231,13 +235,20 @@ const Staff = () => {
     try {
       if (editingStaff) {
         await updateMutation.mutateAsync({ id: editingStaff.id, data });
+        addToast({ type: 'success', title: 'Updated', message: 'Staff updated successfully' });
       } else {
         await createMutation.mutateAsync(data);
+        addToast({ type: 'success', title: 'Created', message: 'Staff created successfully' });
       }
       setShowForm(false);
       setEditingStaff(null);
     } catch (err) {
       console.error('Failed to save staff:', err);
+      if (err.message && err.message !== 'Request failed') {
+        addToast({ type: 'error', title: 'Validation Error', message: err.message });
+      } else {
+        addToast({ type: 'error', title: 'Error', message: 'Failed to save staff. Please try again.' });
+      }
       throw err;
     }
   };

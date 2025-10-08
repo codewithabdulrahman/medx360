@@ -7,6 +7,7 @@ import {
   useRefundPayment,
   useBookings
 } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import {
   FormInput,
   FormButton,
@@ -76,6 +77,7 @@ const PaymentForm = ({ onSave, onCancel, isOpen, isLoading, bookings }) => {
 };
 
 const Payments = () => {
+  const { addToast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [toDelete, setToDelete] = useState(null);
@@ -92,11 +94,33 @@ const Payments = () => {
 
   const handleDelete = (p) => { setToDelete(p); setShowDelete(true); };
   const cancelDelete = () => { setShowDelete(false); setToDelete(null); };
-  const confirmDelete = async () => { if (!toDelete) return; await deleteMutation.mutateAsync(toDelete.id); setShowDelete(false); setToDelete(null); };
 
-  const handleRefund = (p) => { setToRefund(p); if (confirm(`Refund payment ${p.id}?`)) { refundMutation.mutateAsync(p.id); } };
+  const confirmDelete = async () => {
+    if (!toDelete) return;
+    try {
+      await deleteMutation.mutateAsync(toDelete.id);
+      addToast({ type: 'success', title: 'Deleted', message: 'Payment deleted successfully' });
+      setShowDelete(false);
+      setToDelete(null);
+    } catch (err) {
+      console.error(err);
+      addToast({ type: 'error', title: 'Error', message: 'Failed to delete payment. Please try again.' });
+    }
+  };
 
-  const handleSave = async (data) => { try { await createMutation.mutateAsync(data); setShowForm(false); } catch (err) { console.error(err); } };
+  const handleRefund = async (p) => {
+    setToRefund(p);
+    if (!confirm(`Refund payment ${p.id}?`)) return;
+    try {
+      await refundMutation.mutateAsync(p.id);
+      addToast({ type: 'success', title: 'Refunded', message: 'Payment refunded successfully' });
+    } catch (err) {
+      console.error(err);
+      addToast({ type: 'error', title: 'Error', message: 'Failed to refund payment. Please try again.' });
+    }
+  };
+
+  const handleSave = async (data) => { try { await createMutation.mutateAsync(data); addToast({ type: 'success', title: 'Created', message: 'Payment created successfully' }); setShowForm(false); } catch (err) { console.error(err); addToast({ type: 'error', title: 'Error', message: 'Failed to create payment. Please try again.' }); } };
 
   if (isLoading) return <FormLoading message="Loading payments..." />;
   if (error) return <FormStatus type="error" message="Failed to load payments" />;

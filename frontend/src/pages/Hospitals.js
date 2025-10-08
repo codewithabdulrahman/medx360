@@ -14,6 +14,7 @@ import {
   Users
 } from 'lucide-react';
 import { useHospitals, useCreateHospital, useUpdateHospital, useDeleteHospital, useClinics } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import { 
   FormInput, 
   FormButton, 
@@ -120,7 +121,8 @@ const HospitalCard = ({ hospital, onEdit, onDelete, onView }) => {
   );
 };
 
-const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
+const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading, submitError }) => {
+  const { addToast } = useToast();
   const { data: clinicsData } = useClinics();
   const clinics = clinicsData?.data || [];
   
@@ -178,7 +180,14 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    // If there are validation errors, show the first one as a toast
+    const valid = Object.keys(newErrors).length === 0;
+    if (!valid) {
+      const firstKey = Object.keys(newErrors)[0];
+      const firstMessage = newErrors[firstKey];
+      try { addToast({ type: 'error', title: 'Validation error', message: firstMessage, duration: 7000 }); } catch (e) {}
+    }
+    return valid;
   };
 
   const handleSubmit = (e) => {
@@ -341,6 +350,23 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
               placeholder="Brief description of the hospital"
             />
             
+            {/* Submit Error Display */}
+            {submitError && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800">Validation Error</h3>
+                    <div className="mt-2 text-sm text-red-700">{submitError}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <FormInput
               label="Specialties"
               value={formData.specialties}
@@ -369,6 +395,7 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
 };
 
 const Hospitals = () => {
+  const { addToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [clinicFilter, setClinicFilter] = useState('');
@@ -376,6 +403,7 @@ const Hospitals = () => {
   const [editingHospital, setEditingHospital] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [hospitalToDelete, setHospitalToDelete] = useState(null);
+  const [submitError, setSubmitError] = useState('');
 
   const { data: hospitalsResponse, isLoading, error } = useHospitals();
   const { data: clinicsResponse } = useClinics();
@@ -397,6 +425,7 @@ const Hospitals = () => {
 
   const handleEdit = (hospital) => {
     setEditingHospital(hospital);
+    setSubmitError('');
     setShowForm(true);
   };
 
@@ -410,12 +439,12 @@ const Hospitals = () => {
     
     try {
       await deleteHospitalMutation.mutateAsync(hospitalToDelete.id);
-('Success', 'Hospital deleted successfully');
+      addToast({ type: 'success', title: 'Deleted', message: 'Hospital deleted successfully' });
       setShowDeleteConfirm(false);
       setHospitalToDelete(null);
     } catch (error) {
       console.error('Failed to delete hospital:', error);
-('Error', 'Failed to delete hospital. Please try again.');
+      addToast({ type: 'error', title: 'Error', message: 'Failed to delete hospital. Please try again.' });
     }
   };
 
@@ -426,7 +455,7 @@ const Hospitals = () => {
 
   const handleView = (hospital) => {
     // TODO: Implement view details modal
-('Info', `Viewing hospital: ${hospital.name}`);
+    addToast({ type: 'info', title: 'Info', message: `Viewing hospital: ${hospital.name}` });
   };
 
   const handleSave = async (formData) => {
@@ -436,21 +465,24 @@ const Hospitals = () => {
           id: editingHospital.id, 
           data: formData 
         });
-('Success', 'Hospital updated successfully');
+        addToast({ type: 'success', title: 'Updated', message: 'Hospital updated successfully' });
       } else {
         await createHospitalMutation.mutateAsync(formData);
-('Success', 'Hospital created successfully');
+        addToast({ type: 'success', title: 'Created', message: 'Hospital created successfully' });
       }
       setShowForm(false);
       setEditingHospital(null);
+      setSubmitError('');
     } catch (error) {
       console.error('Failed to save hospital:', error);
       
       // Show detailed validation errors if available
       if (error.message && error.message !== 'Request failed') {
-('Validation Error', error.message);
+        addToast({ type: 'error', title: 'Validation Error', message: error.message });
+        setSubmitError(error.message);
       } else {
-('Error', 'Failed to save hospital. Please try again.');
+        addToast({ type: 'error', title: 'Error', message: 'Failed to save hospital. Please try again.' });
+        setSubmitError('Failed to save hospital. Please try again.');
       }
     }
   };
@@ -458,6 +490,7 @@ const Hospitals = () => {
   const handleCancel = () => {
     setShowForm(false);
     setEditingHospital(null);
+    setSubmitError('');
   };
 
   if (isLoading) {
@@ -570,6 +603,7 @@ const Hospitals = () => {
         onCancel={handleCancel}
         isOpen={showForm}
         isLoading={createHospitalMutation.isLoading || updateHospitalMutation.isLoading}
+        submitError={submitError}
       />
 
       {/* Delete Confirmation Modal */}

@@ -9,6 +9,7 @@ import {
   useDoctors,
   useServices
 } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import {
   FormInput,
   FormButton,
@@ -59,6 +60,7 @@ const BookingCard = ({ booking, onEdit, onDelete, onView }) => {
 };
 
 const BookingForm = ({ booking, onSave, onCancel, isOpen, isLoading }) => {
+  const { addToast } = useToast();
   const { data: clinicsResp } = useClinics();
   const { data: doctorsResp } = useDoctors();
   const { data: servicesResp } = useServices();
@@ -108,7 +110,13 @@ const BookingForm = ({ booking, onSave, onCancel, isOpen, isLoading }) => {
     if (!formData.appointment_date) e.appointment_date = 'Appointment date is required';
     if (!formData.appointment_time) e.appointment_time = 'Appointment time is required';
     setErrors(e);
-    return Object.keys(e).length === 0;
+    const valid = Object.keys(e).length === 0;
+    if (!valid) {
+      const firstKey = Object.keys(e)[0];
+      const firstMessage = e[firstKey];
+      try { addToast({ type: 'error', title: 'Validation Error', message: firstMessage, duration: 7000 }); } catch (err) {}
+    }
+    return valid;
   };
 
   const handleSubmit = (e) => { e.preventDefault(); if (validate()) onSave(formData); };
@@ -120,16 +128,16 @@ const BookingForm = ({ booking, onSave, onCancel, isOpen, isLoading }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onCancel} title={booking ? 'Edit Booking' : 'Create Booking'} size="md">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormSelect label="Clinic" value={formData.clinic_id} onChange={(e) => handleChange('clinic_id', e.target.value)} options={[{ value: '', label: 'Select Clinic' }, ...clinicOptions]} error={errors.clinic_id} required />
+          <FormSelect label="Clinic" value={formData.clinic_id} onChange={(e) => handleChange('clinic_id', e.target.value)} options={[{ value: '', label: 'Select Clinic' }, ...clinicOptions]} required />
           <FormSelect label="Doctor" value={formData.doctor_id} onChange={(e) => handleChange('doctor_id', e.target.value)} options={[{ value: '', label: 'Select Doctor' }, ...doctorOptions]} />
           <FormSelect label="Service" value={formData.service_id} onChange={(e) => handleChange('service_id', e.target.value)} options={[{ value: '', label: 'Select Service' }, ...serviceOptions]} />
-          <FormInput label="Patient Name" value={formData.patient_name} onChange={(e) => handleChange('patient_name', e.target.value)} error={errors.patient_name} required />
+          <FormInput label="Patient Name" value={formData.patient_name} onChange={(e) => handleChange('patient_name', e.target.value)} required />
           <FormInput label="Patient Email" type="email" value={formData.patient_email} onChange={(e) => handleChange('patient_email', e.target.value)} />
           <FormInput label="Patient Phone" value={formData.patient_phone} onChange={(e) => handleChange('patient_phone', e.target.value)} />
-          <FormInput label="Date" type="date" value={formData.appointment_date} onChange={(e) => handleChange('appointment_date', e.target.value)} error={errors.appointment_date} required />
-          <FormInput label="Time" type="time" value={formData.appointment_time} onChange={(e) => handleChange('appointment_time', e.target.value)} error={errors.appointment_time} required />
+          <FormInput label="Date" type="date" value={formData.appointment_date} onChange={(e) => handleChange('appointment_date', e.target.value)} required />
+          <FormInput label="Time" type="time" value={formData.appointment_time} onChange={(e) => handleChange('appointment_time', e.target.value)} required />
           <FormInput label="Duration (minutes)" type="number" value={formData.duration_minutes} onChange={(e) => handleChange('duration_minutes', e.target.value)} />
           <FormSelect label="Status" value={formData.status} onChange={(e) => handleChange('status', e.target.value)} options={[{ value: 'pending', label: 'Pending' }, { value: 'confirmed', label: 'Confirmed' }, { value: 'cancelled', label: 'Cancelled' }]} />
         </div>
@@ -146,6 +154,7 @@ const BookingForm = ({ booking, onSave, onCancel, isOpen, isLoading }) => {
 };
 
 const Bookings = () => {
+  const { addToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [clinicFilter, setClinicFilter] = useState('');
   const [doctorFilter, setDoctorFilter] = useState('');
@@ -180,7 +189,15 @@ const Bookings = () => {
 
   const confirmDelete = async () => {
     if (!bookingToDelete) return;
-    try { await deleteMutation.mutateAsync(bookingToDelete.id); setShowDeleteConfirm(false); setBookingToDelete(null); } catch (err) { console.error('Failed to delete booking', err); }
+    try {
+      await deleteMutation.mutateAsync(bookingToDelete.id);
+      addToast({ type: 'success', title: 'Deleted', message: 'Booking deleted successfully' });
+      setShowDeleteConfirm(false);
+      setBookingToDelete(null);
+    } catch (err) {
+      console.error('Failed to delete booking', err);
+      addToast({ type: 'error', title: 'Error', message: 'Failed to delete booking. Please try again.' });
+    }
   };
 
   const handleView = (b) => { alert(`${b.patient_name}\n${b.appointment_date} ${b.appointment_time}`); };
@@ -189,11 +206,20 @@ const Bookings = () => {
     try {
       if (editingBooking) {
         await updateMutation.mutateAsync({ id: editingBooking.id, data });
+        addToast({ type: 'success', title: 'Updated', message: 'Booking updated successfully' });
       } else {
         await createMutation.mutateAsync(data);
+        addToast({ type: 'success', title: 'Created', message: 'Booking created successfully' });
       }
       setShowForm(false); setEditingBooking(null);
-    } catch (err) { console.error('Failed to save booking', err); throw err; }
+    } catch (err) { 
+      console.error('Failed to save booking', err); 
+      if (err?.message && err.message !== 'Request failed') {
+        addToast({ type: 'error', title: 'Validation Error', message: err.message });
+      } else {
+        addToast({ type: 'error', title: 'Error', message: 'Failed to save booking. Please try again.' });
+      }
+    }
   };
 
   const handleCancel = () => { setShowForm(false); setEditingBooking(null); };

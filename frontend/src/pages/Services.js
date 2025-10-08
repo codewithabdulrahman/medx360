@@ -21,6 +21,7 @@ import {
   useClinics, 
   useHospitals 
 } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import { 
   FormInput, 
   FormButton, 
@@ -327,6 +328,7 @@ const ServiceForm = ({ service, onSave, onCancel, isOpen, isLoading }) => {
 };
 
 const Services = () => {
+  const { addToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -373,10 +375,12 @@ const Services = () => {
     
     try {
       await deleteServiceMutation.mutateAsync(serviceToDelete.id);
+      addToast({ type: 'success', title: 'Deleted', message: 'Service deleted successfully' });
       setShowDeleteConfirm(false);
       setServiceToDelete(null);
     } catch (error) {
       console.error('Failed to delete service:', error);
+      addToast({ type: 'error', title: 'Error', message: 'Failed to delete service. Please try again.' });
     }
   };
 
@@ -387,7 +391,7 @@ const Services = () => {
 
   const handleView = (service) => {
     // TODO: Implement view details modal
-    alert(`Viewing service: ${service.name}`);
+    addToast({ type: 'info', title: 'Info', message: `Viewing service: ${service.name}` });
   };
 
   const handleSave = async (formData) => {
@@ -397,8 +401,10 @@ const Services = () => {
           id: editingService.id, 
           data: formData 
         });
+        addToast({ type: 'success', title: 'Updated', message: 'Service updated successfully' });
       } else {
         await createServiceMutation.mutateAsync(formData);
+        addToast({ type: 'success', title: 'Created', message: 'Service created successfully' });
       }
       setShowForm(false);
       setEditingService(null);
@@ -407,7 +413,9 @@ const Services = () => {
       
       // Show detailed validation errors if available
       if (error.message && error.message !== 'Request failed') {
+        addToast({ type: 'error', title: 'Validation Error', message: error.message });
       } else {
+        addToast({ type: 'error', title: 'Error', message: 'Failed to save service. Please try again.' });
       }
     }
   };

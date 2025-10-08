@@ -9,6 +9,7 @@ import {
   useBookings,
   useDoctors
 } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import {
   FormInput,
   FormButton,
@@ -131,6 +132,7 @@ const ConsultationForm = ({ consultation, onSave, onCancel, isOpen, isLoading })
 };
 
 const Consultations = () => {
+  const { addToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [doctorFilter, setDoctorFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -162,22 +164,41 @@ const Consultations = () => {
 
   const confirmDelete = async () => {
     if (!toDelete) return;
-    try { await deleteMutation.mutateAsync(toDelete.id); setShowDelete(false); setToDelete(null); } catch (err) { console.error(err); }
+    try {
+      await deleteMutation.mutateAsync(toDelete.id);
+      addToast({ type: 'success', title: 'Deleted', message: 'Consultation deleted successfully' });
+      setShowDelete(false);
+      setToDelete(null);
+    } catch (err) {
+      console.error(err);
+      addToast({ type: 'error', title: 'Error', message: 'Failed to delete consultation. Please try again.' });
+    }
   };
 
   const handleComplete = async (c) => {
-    try { await completeMutation.mutateAsync(c.id); } catch (err) { console.error(err); }
+    try {
+      await completeMutation.mutateAsync(c.id);
+      addToast({ type: 'success', title: 'Completed', message: 'Consultation marked as completed' });
+    } catch (err) {
+      console.error(err);
+      addToast({ type: 'error', title: 'Error', message: 'Failed to complete consultation. Please try again.' });
+    }
   };
 
   const handleSave = async (data) => {
     try {
       if (editing) {
         await updateMutation.mutateAsync({ id: editing.id, data });
+        addToast({ type: 'success', title: 'Updated', message: 'Consultation updated successfully' });
       } else {
         await createMutation.mutateAsync(data);
+        addToast({ type: 'success', title: 'Created', message: 'Consultation created successfully' });
       }
       setShowForm(false); setEditing(null);
-    } catch (err) { console.error(err); }
+    } catch (err) {
+      console.error(err);
+      addToast({ type: 'error', title: 'Error', message: 'Failed to save consultation. Please try again.' });
+    }
   };
 
   if (isLoading) return <FormLoading message="Loading consultations..." />;

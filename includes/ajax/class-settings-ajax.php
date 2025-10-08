@@ -92,10 +92,14 @@ class MedX360_Settings_AJAX extends MedX360_AJAX_Controller {
         $existing = get_option('medx360_settings', array());
         $new = array_merge($existing, $sanitized);
 
-        // Persist settings
+        // Persist settings. Note: update_option() returns false when the value did not change
+        // or on failure. To avoid false negatives (no-change), verify the stored value.
         $updated = update_option('medx360_settings', $new);
 
-        if ($updated === false) {
+        // Verify that settings were stored (handle no-change case where update_option returns false)
+        $stored = get_option('medx360_settings', array());
+        if ($stored !== $new) {
+            // Still not matching - treat as an error
             $this->format_error_response(__('Failed to save settings', 'medx360'), 'update_failed', 500);
         }
 
