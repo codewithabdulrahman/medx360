@@ -427,7 +427,7 @@ const Clinics = () => {
       console.error('Failed to save clinic:', error);
       // Show validation/server errors via toast only
       if (error.message && error.message !== 'Request failed') {
-        try { addToast({ type: 'error', title: 'Validation Error', message: error.message }); } catch(e){}
+        try { addToast({ type: 'error', title: '', message: error.message }); } catch(e){}
       } else {
         try { addToast({ type: 'error', title: 'Error', message: 'Failed to save clinic. Please try again.' }); } catch(e){}
       }

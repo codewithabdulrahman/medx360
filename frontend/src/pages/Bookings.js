@@ -114,7 +114,7 @@ const BookingForm = ({ booking, onSave, onCancel, isOpen, isLoading }) => {
     if (!valid) {
       const firstKey = Object.keys(e)[0];
       const firstMessage = e[firstKey];
-      try { addToast({ type: 'error', title: 'Validation Error', message: firstMessage, duration: 7000 }); } catch (err) {}
+      try { addToast({ type: 'error', title: '', message: firstMessage, duration: 7000 }); } catch (err) {}
     }
     return valid;
   };
@@ -215,7 +215,7 @@ const Bookings = () => {
     } catch (err) { 
       console.error('Failed to save booking', err); 
       if (err?.message && err.message !== 'Request failed') {
-        addToast({ type: 'error', title: 'Validation Error', message: err.message });
+        addToast({ type: 'error', title: '', message: err.message });
       } else {
         addToast({ type: 'error', title: 'Error', message: 'Failed to save booking. Please try again.' });
       }

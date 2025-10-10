@@ -413,7 +413,7 @@ const Services = () => {
       
       // Show detailed validation errors if available
       if (error.message && error.message !== 'Request failed') {
-        addToast({ type: 'error', title: 'Validation Error', message: error.message });
+        addToast({ type: 'error', title: '', message: error.message });
       } else {
         addToast({ type: 'error', title: 'Error', message: 'Failed to save service. Please try again.' });
       }

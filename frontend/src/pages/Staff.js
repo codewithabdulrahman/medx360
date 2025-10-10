@@ -245,7 +245,7 @@ const Staff = () => {
     } catch (err) {
       console.error('Failed to save staff:', err);
       if (err.message && err.message !== 'Request failed') {
-        addToast({ type: 'error', title: 'Validation Error', message: err.message });
+        addToast({ type: 'error', title: '', message: err.message });
       } else {
         addToast({ type: 'error', title: 'Error', message: 'Failed to save staff. Please try again.' });
       }
