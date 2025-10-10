@@ -70,10 +70,15 @@ class MedX360_AJAX_Controller {
      * Get search parameters from request
      */
     protected function get_search_params() {
+        $order = strtoupper(sanitize_text_field($_POST['order'] ?? 'DESC'));
+        if (!in_array($order, array('ASC', 'DESC'), true)) {
+            $order = 'DESC';
+        }
+
         return array(
             'search' => sanitize_text_field($_POST['search'] ?? ''),
             'orderby' => sanitize_text_field($_POST['orderby'] ?? 'id'),
-            'order' => in_array(strtoupper($_POST['order'] ?? 'DESC'), ['ASC', 'DESC']) ? strtoupper($_POST['order']) : 'DESC'
+            'order' => $order
         );
     }
     

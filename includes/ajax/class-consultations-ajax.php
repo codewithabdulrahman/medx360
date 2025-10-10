@@ -332,12 +332,45 @@ class MedX360_Consultations_AJAX extends MedX360_AJAX_Controller {
         // Add update timestamp
         $sanitized_data['updated_at'] = current_time('mysql');
         
+        // Build dynamic formats to match sanitized data
+        $field_types = array(
+            'booking_id' => 'int',
+            'doctor_id' => 'int',
+            'patient_id' => 'int',
+            'consultation_type' => 'text',
+            'diagnosis' => 'textarea',
+            'prescription' => 'textarea',
+            'notes' => 'textarea',
+            'follow_up_date' => 'date',
+            'status' => 'text'
+        );
+
+        $formats = array();
+        foreach ($field_types as $field => $type) {
+            if (array_key_exists($field, $sanitized_data)) {
+                switch ($type) {
+                    case 'int':
+                        $formats[] = '%d';
+                        break;
+                    case 'float':
+                        $formats[] = '%f';
+                        break;
+                    default:
+                        $formats[] = '%s';
+                }
+            }
+        }
+
+        if (array_key_exists('updated_at', $sanitized_data)) {
+            $formats[] = '%s';
+        }
+
         // Update consultation
         $result = $wpdb->update(
             $table_name,
             $sanitized_data,
             array('id' => $consultation_id),
-            array('%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s'),
+            $formats,
             array('%d')
         );
         

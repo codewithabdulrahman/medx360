@@ -53,9 +53,19 @@ class MedX360_Validator {
         if (empty($time)) {
             return false;
         }
-        
-        $d = DateTime::createFromFormat($format, $time);
-        return $d && $d->format($format) === $time;
+
+        $time = trim($time);
+
+        // Accept both H:i:s and H:i formats (seconds optional)
+        $formats = array('H:i:s', 'H:i');
+        foreach ($formats as $fmt) {
+            $d = DateTime::createFromFormat($fmt, $time);
+            if ($d && $d->format($fmt) === $time) {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     /**
@@ -278,6 +288,53 @@ class MedX360_Validator {
             $errors[] = __('Invalid status', 'medx360');
         }
         
+        return $errors;
+    }
+
+    /**
+     * Validate staff data
+     */
+    public static function validate_staff_data($data) {
+        $errors = array();
+
+        // Required fields
+        $required_fields = array('clinic_id', 'first_name', 'last_name', 'email');
+        if (!is_array($data)) {
+            $errors[] = __('Invalid data format', 'medx360');
+            return $errors;
+        }
+
+        foreach ($required_fields as $field) {
+            if (empty($data[$field])) {
+                $errors[] = sprintf(__('%s is required', 'medx360'), ucfirst(str_replace('_', ' ', $field)));
+            }
+        }
+
+        // Validate clinic_id
+        if (!empty($data['clinic_id']) && !is_numeric($data['clinic_id'])) {
+            $errors[] = __('Invalid clinic ID', 'medx360');
+        }
+
+        // Validate hospital_id
+        if (!empty($data['hospital_id']) && !is_numeric($data['hospital_id'])) {
+            $errors[] = __('Invalid hospital ID', 'medx360');
+        }
+
+        // Validate email
+        if (!empty($data['email']) && !self::validate_email($data['email'])) {
+            $errors[] = __('Invalid email address', 'medx360');
+        }
+
+        // Validate phone
+        if (!empty($data['phone']) && !self::validate_phone($data['phone'])) {
+            $errors[] = __('Invalid phone number', 'medx360');
+        }
+
+        // Validate status
+        if (!empty($data['status']) && !self::validate_status($data['status'], array('active', 'inactive', 'pending'))) {
+            $errors[] = __('Invalid status', 'medx360');
+        }
+
         return $errors;
     }
     

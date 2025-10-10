@@ -91,6 +91,7 @@ class MedX360 {
         require_once MEDX360_PLUGIN_DIR . 'includes/ajax/class-payments-ajax.php';
         require_once MEDX360_PLUGIN_DIR . 'includes/ajax/class-consultations-ajax.php';
         require_once MEDX360_PLUGIN_DIR . 'includes/ajax/class-onboarding-ajax.php';
+    require_once MEDX360_PLUGIN_DIR . 'includes/ajax/class-settings-ajax.php';
     }
     
     /**
@@ -138,6 +139,7 @@ class MedX360 {
             'MedX360_Payments_AJAX',
             'MedX360_Consultations_AJAX',
             'MedX360_Onboarding_AJAX'
+            , 'MedX360_Settings_AJAX'
         );
         
         foreach ($ajax_controllers as $controller_class) {

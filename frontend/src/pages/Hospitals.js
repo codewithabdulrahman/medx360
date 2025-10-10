@@ -14,6 +14,7 @@ import {
   Users
 } from 'lucide-react';
 import { useHospitals, useCreateHospital, useUpdateHospital, useDeleteHospital, useClinics } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import { 
   FormInput, 
   FormButton, 
@@ -120,7 +121,8 @@ const HospitalCard = ({ hospital, onEdit, onDelete, onView }) => {
   );
 };
 
-const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
+const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading, submitError }) => {
+  const { addToast } = useToast();
   const { data: clinicsData } = useClinics();
   const clinics = clinicsData?.data || [];
   
@@ -144,6 +146,51 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
 
   const [errors, setErrors] = useState({});
 
+  // Reset form when hospital or modal open state changes
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    if (hospital) {
+      setFormData({
+        clinic_id: hospital.clinic_id || '',
+        name: hospital.name || '',
+        slug: hospital.slug || '',
+        description: hospital.description || '',
+        address: hospital.address || '',
+        city: hospital.city || '',
+        state: hospital.state || '',
+        country: hospital.country || '',
+        postal_code: hospital.postal_code || '',
+        phone: hospital.phone || '',
+        email: hospital.email || '',
+        website: hospital.website || '',
+        capacity: hospital.capacity || '',
+        specialties: hospital.specialties || '',
+        status: hospital.status || 'active',
+      });
+    } else {
+      setFormData({
+        clinic_id: '',
+        name: '',
+        slug: '',
+        description: '',
+        address: '',
+        city: '',
+        state: '',
+        country: '',
+        postal_code: '',
+        phone: '',
+        email: '',
+        website: '',
+        capacity: '',
+        specialties: '',
+        status: 'active',
+      });
+    }
+
+    setErrors({});
+  }, [hospital, isOpen]);
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -163,6 +210,8 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
     
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
+    } else if (!/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/[\s\-\(\)]/g, ''))) {
+      newErrors.phone = 'Invalid phone number';
     }
     
     if (!formData.address.trim()) {
@@ -175,6 +224,14 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
     
     if (!formData.state.trim()) {
       newErrors.state = 'State is required';
+    }
+
+    if (formData.slug && !/^[a-z0-9\-]+$/.test(formData.slug)) {
+      newErrors.slug = 'Slug must contain only lowercase letters, numbers, and hyphens';
+    }
+
+    if (formData.website && !/^https?:\/\/.+\..+/.test(formData.website)) {
+      newErrors.website = 'Invalid website URL';
     }
 
     setErrors(newErrors);
@@ -195,180 +252,182 @@ const HospitalForm = ({ hospital, onSave, onCancel, isOpen, isLoading }) => {
     }
   };
 
-  if (!isOpen) return null;
-
   const clinicOptions = clinics.map(clinic => ({
     value: clinic.id,
     label: clinic.name
   }));
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div className="mt-3">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">
-              {hospital ? 'Edit Hospital' : 'Add New Hospital'}
-            </h3>
-            <button
-              onClick={onCancel}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <span className="sr-only">Close</span>
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormSelect
-                label="Clinic"
-                value={formData.clinic_id}
-                onChange={(e) => handleChange('clinic_id', e.target.value)}
-                options={clinicOptions}
-                error={errors.clinic_id}
-                required
-              />
-              
-              <FormInput
-                label="Hospital Name"
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                error={errors.name}
-                required
-              />
-              
-              <FormInput
-                label="Slug"
-                value={formData.slug}
-                onChange={(e) => handleChange('slug', e.target.value)}
-                error={errors.slug}
-                placeholder="hospital-name"
-              />
-              
-              <FormInput
-                label="Email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                error={errors.email}
-                required
-              />
-              
-              <FormInput
-                label="Phone"
-                value={formData.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
-                error={errors.phone}
-                required
-              />
-              
-              <FormInput
-                label="Address"
-                value={formData.address}
-                onChange={(e) => handleChange('address', e.target.value)}
-                error={errors.address}
-                required
-              />
-              
-              <FormInput
-                label="City"
-                value={formData.city}
-                onChange={(e) => handleChange('city', e.target.value)}
-                error={errors.city}
-                required
-              />
-              
-              <FormInput
-                label="State"
-                value={formData.state}
-                onChange={(e) => handleChange('state', e.target.value)}
-                error={errors.state}
-                required
-              />
-              
-              <FormInput
-                label="Country"
-                value={formData.country}
-                onChange={(e) => handleChange('country', e.target.value)}
-                error={errors.country}
-              />
-              
-              <FormInput
-                label="Postal Code"
-                value={formData.postal_code}
-                onChange={(e) => handleChange('postal_code', e.target.value)}
-                error={errors.postal_code}
-              />
-              
-              <FormInput
-                label="Website"
-                value={formData.website}
-                onChange={(e) => handleChange('website', e.target.value)}
-                error={errors.website}
-                placeholder="example.com (https:// will be added automatically)"
-              />
-              
-              <FormInput
-                label="Capacity"
-                type="number"
-                value={formData.capacity}
-                onChange={(e) => handleChange('capacity', e.target.value)}
-                error={errors.capacity}
-                placeholder="Number of beds"
-              />
-              
-              <FormSelect
-                label="Status"
-                value={formData.status}
-                onChange={(e) => handleChange('status', e.target.value)}
-                options={[
-                  { value: 'active', label: 'Active' },
-                  { value: 'inactive', label: 'Inactive' },
-                  { value: 'pending', label: 'Pending' },
-                ]}
-                error={errors.status}
-              />
-            </div>
-            
-            <FormTextarea
-              label="Description"
-              value={formData.description}
-              onChange={(e) => handleChange('description', e.target.value)}
-              error={errors.description}
-              placeholder="Brief description of the hospital"
-            />
-            
-            <FormInput
-              label="Specialties"
-              value={formData.specialties}
-              onChange={(e) => handleChange('specialties', e.target.value)}
-              error={errors.specialties}
-              placeholder="Cardiology, Neurology, etc. (comma separated)"
-            />
-
-            <div className="flex items-center justify-end space-x-3 pt-4 border-t">
-              <FormButton
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-              >
-                Cancel
-              </FormButton>
-              <FormButton type="submit" loading={isLoading}>
-                {hospital ? 'Update Hospital' : 'Create Hospital'}
-              </FormButton>
-            </div>
-          </form>
+    <Modal
+      isOpen={isOpen}
+      onClose={onCancel}
+      title={hospital ? 'Edit Hospital' : 'Add New Hospital'}
+      size="lg"
+    >
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormSelect
+            label="Clinic"
+            value={formData.clinic_id}
+            onChange={(e) => handleChange('clinic_id', e.target.value)}
+            options={clinicOptions}
+            error={errors.clinic_id}
+            required
+          />
+          
+          <FormInput
+            label="Hospital Name"
+            value={formData.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+            error={errors.name}
+            required
+          />
+          
+          <FormInput
+            label="Slug"
+            value={formData.slug}
+            onChange={(e) => handleChange('slug', e.target.value)}
+            error={errors.slug}
+            placeholder="hospital-name"
+          />
+          
+          <FormInput
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            error={errors.email}
+            required
+          />
+          
+          <FormInput
+            label="Phone"
+            value={formData.phone}
+            onChange={(e) => handleChange('phone', e.target.value)}
+            error={errors.phone}
+            required
+          />
+          
+          <FormInput
+            label="Address"
+            value={formData.address}
+            onChange={(e) => handleChange('address', e.target.value)}
+            error={errors.address}
+            required
+          />
+          
+          <FormInput
+            label="City"
+            value={formData.city}
+            onChange={(e) => handleChange('city', e.target.value)}
+            error={errors.city}
+            required
+          />
+          
+          <FormInput
+            label="State"
+            value={formData.state}
+            onChange={(e) => handleChange('state', e.target.value)}
+            error={errors.state}
+            required
+          />
+          
+          <FormInput
+            label="Country"
+            value={formData.country}
+            onChange={(e) => handleChange('country', e.target.value)}
+            error={errors.country}
+          />
+          
+          <FormInput
+            label="Postal Code"
+            value={formData.postal_code}
+            onChange={(e) => handleChange('postal_code', e.target.value)}
+            error={errors.postal_code}
+          />
+          
+          <FormInput
+            label="Website"
+            value={formData.website}
+            onChange={(e) => handleChange('website', e.target.value)}
+            error={errors.website}
+            placeholder="https://example.com"
+          />
+          
+          <FormInput
+            label="Capacity"
+            type="number"
+            value={formData.capacity}
+            onChange={(e) => handleChange('capacity', e.target.value)}
+            error={errors.capacity}
+            placeholder="Number of beds"
+          />
+          
+          <FormSelect
+            label="Status"
+            value={formData.status}
+            onChange={(e) => handleChange('status', e.target.value)}
+            options={[
+              { value: 'active', label: 'Active' },
+              { value: 'inactive', label: 'Inactive' },
+              { value: 'pending', label: 'Pending' },
+            ]}
+            error={errors.status}
+          />
         </div>
-      </div>
-    </div>
+        
+        <FormTextarea
+          label="Description"
+          value={formData.description}
+          onChange={(e) => handleChange('description', e.target.value)}
+          error={errors.description}
+          placeholder="Brief description of the hospital"
+        />
+
+        <FormInput
+          label="Specialties"
+          value={formData.specialties}
+          onChange={(e) => handleChange('specialties', e.target.value)}
+          error={errors.specialties}
+          placeholder="Cardiology, Neurology, etc. (comma separated)"
+        />
+
+        {/* Submit Error Display - for server/API errors */}
+        {submitError && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Validation Error</h3>
+                <div className="mt-2 text-sm text-red-700">{submitError}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center justify-end space-x-3 pt-4 border-t">
+          <FormButton
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+          >
+            Cancel
+          </FormButton>
+          <FormButton type="submit" loading={isLoading}>
+            {hospital ? 'Update Hospital' : 'Create Hospital'}
+          </FormButton>
+        </div>
+      </form>
+    </Modal>
   );
 };
 
 const Hospitals = () => {
+  const { addToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [clinicFilter, setClinicFilter] = useState('');
@@ -376,6 +435,7 @@ const Hospitals = () => {
   const [editingHospital, setEditingHospital] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [hospitalToDelete, setHospitalToDelete] = useState(null);
+  const [submitError, setSubmitError] = useState('');
 
   const { data: hospitalsResponse, isLoading, error } = useHospitals();
   const { data: clinicsResponse } = useClinics();
@@ -397,6 +457,7 @@ const Hospitals = () => {
 
   const handleEdit = (hospital) => {
     setEditingHospital(hospital);
+    setSubmitError('');
     setShowForm(true);
   };
 
@@ -410,12 +471,12 @@ const Hospitals = () => {
     
     try {
       await deleteHospitalMutation.mutateAsync(hospitalToDelete.id);
-('Success', 'Hospital deleted successfully');
+      addToast({ type: 'success', title: 'Deleted', message: 'Hospital deleted successfully' });
       setShowDeleteConfirm(false);
       setHospitalToDelete(null);
     } catch (error) {
       console.error('Failed to delete hospital:', error);
-('Error', 'Failed to delete hospital. Please try again.');
+      addToast({ type: 'error', title: 'Error', message: 'Failed to delete hospital. Please try again.' });
     }
   };
 
@@ -426,7 +487,7 @@ const Hospitals = () => {
 
   const handleView = (hospital) => {
     // TODO: Implement view details modal
-('Info', `Viewing hospital: ${hospital.name}`);
+    addToast({ type: 'info', title: 'Info', message: `Viewing hospital: ${hospital.name}` });
   };
 
   const handleSave = async (formData) => {
@@ -436,21 +497,24 @@ const Hospitals = () => {
           id: editingHospital.id, 
           data: formData 
         });
-('Success', 'Hospital updated successfully');
+        addToast({ type: 'success', title: 'Updated', message: 'Hospital updated successfully' });
       } else {
         await createHospitalMutation.mutateAsync(formData);
-('Success', 'Hospital created successfully');
+        addToast({ type: 'success', title: 'Created', message: 'Hospital created successfully' });
       }
       setShowForm(false);
       setEditingHospital(null);
+      setSubmitError('');
     } catch (error) {
       console.error('Failed to save hospital:', error);
       
       // Show detailed validation errors if available
       if (error.message && error.message !== 'Request failed') {
-('Validation Error', error.message);
+        addToast({ type: 'error', title: '', message: error.message });
+        setSubmitError(error.message);
       } else {
-('Error', 'Failed to save hospital. Please try again.');
+        addToast({ type: 'error', title: 'Error', message: 'Failed to save hospital. Please try again.' });
+        setSubmitError('Failed to save hospital. Please try again.');
       }
     }
   };
@@ -458,6 +522,7 @@ const Hospitals = () => {
   const handleCancel = () => {
     setShowForm(false);
     setEditingHospital(null);
+    setSubmitError('');
   };
 
   if (isLoading) {
@@ -570,6 +635,7 @@ const Hospitals = () => {
         onCancel={handleCancel}
         isOpen={showForm}
         isLoading={createHospitalMutation.isLoading || updateHospitalMutation.isLoading}
+        submitError={submitError}
       />
 
       {/* Delete Confirmation Modal */}

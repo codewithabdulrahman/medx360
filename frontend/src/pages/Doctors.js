@@ -23,6 +23,7 @@ import {
   useClinics, 
   useHospitals 
 } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import { 
   FormInput, 
   FormButton, 
@@ -397,6 +398,7 @@ const DoctorForm = ({ doctor, onSave, onCancel, isOpen, isLoading }) => {
 };
 
 const Doctors = () => {
+  const { addToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [specializationFilter, setSpecializationFilter] = useState('');
@@ -444,12 +446,12 @@ const Doctors = () => {
     
     try {
       await deleteDoctorMutation.mutateAsync(doctorToDelete.id);
-('Success', 'Doctor deleted successfully');
+      addToast({ type: 'success', title: 'Deleted', message: 'Doctor deleted successfully' });
       setShowDeleteConfirm(false);
       setDoctorToDelete(null);
     } catch (error) {
       console.error('Failed to delete doctor:', error);
-('Error', 'Failed to delete doctor. Please try again.');
+      addToast({ type: 'error', title: 'Error', message: 'Failed to delete doctor. Please try again.' });
     }
   };
 
@@ -460,7 +462,7 @@ const Doctors = () => {
 
   const handleView = (doctor) => {
     // TODO: Implement view details modal
-('Info', `Viewing doctor: ${doctor.first_name} ${doctor.last_name}`);
+    addToast({ type: 'info', title: 'Info', message: `Viewing doctor: ${doctor.first_name} ${doctor.last_name}` });
   };
 
   const handleSave = async (formData) => {
@@ -470,10 +472,10 @@ const Doctors = () => {
           id: editingDoctor.id, 
           data: formData 
         });
-('Success', 'Doctor updated successfully');
+        addToast({ type: 'success', title: 'Updated', message: 'Doctor updated successfully' });
       } else {
         await createDoctorMutation.mutateAsync(formData);
-('Success', 'Doctor created successfully');
+        addToast({ type: 'success', title: 'Created', message: 'Doctor created successfully' });
       }
       setShowForm(false);
       setEditingDoctor(null);
@@ -482,9 +484,9 @@ const Doctors = () => {
       
       // Show detailed validation errors if available
       if (error.message && error.message !== 'Request failed') {
-('Validation Error', error.message);
+        addToast({ type: 'error', title: '', message: error.message });
       } else {
-('Error', 'Failed to save doctor. Please try again.');
+        addToast({ type: 'error', title: 'Error', message: 'Failed to save doctor. Please try again.' });
       }
     }
   };

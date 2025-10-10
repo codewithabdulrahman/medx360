@@ -353,13 +353,36 @@ class MedX360_Hospitals_AJAX extends MedX360_AJAX_Controller {
         
         // Add update timestamp
         $sanitized_data['updated_at'] = current_time('mysql');
-        
+
+        // Build formats dynamically from sanitized data to avoid format/order mismatches
+        $formats = array();
+        foreach ($sanitized_data as $key => $value) {
+            // Determine type based on sanitize map
+            switch ($key) {
+                case 'clinic_id':
+                    $formats[] = '%d';
+                    break;
+                case 'settings':
+                    // JSON stored as string
+                    $formats[] = '%s';
+                    break;
+                default:
+                    // default to string
+                    $formats[] = '%s';
+            }
+        }
+
+        // Ensure updated_at is treated as string
+        if (isset($sanitized_data['updated_at'])) {
+            $formats[array_search('updated_at', array_keys($sanitized_data))] = '%s';
+        }
+
         // Update hospital
         $result = $wpdb->update(
             $table_name,
             $sanitized_data,
             array('id' => $hospital_id),
-            array('%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'),
+            $formats,
             array('%d')
         );
         

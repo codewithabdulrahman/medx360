@@ -343,12 +343,45 @@ class MedX360_Services_AJAX extends MedX360_AJAX_Controller {
         // Add update timestamp
         $sanitized_data['updated_at'] = current_time('mysql');
         
+        // Build dynamic formats for update
+        $field_types = array(
+            'clinic_id' => 'int',
+            'hospital_id' => 'int',
+            'name' => 'text',
+            'description' => 'textarea',
+            'duration_minutes' => 'int',
+            'price' => 'float',
+            'category' => 'text',
+            'status' => 'text',
+            'settings' => 'json'
+        );
+
+        $formats = array();
+        foreach ($field_types as $field => $type) {
+            if (array_key_exists($field, $sanitized_data)) {
+                switch ($type) {
+                    case 'int':
+                        $formats[] = '%d';
+                        break;
+                    case 'float':
+                        $formats[] = '%f';
+                        break;
+                    default:
+                        $formats[] = '%s';
+                }
+            }
+        }
+
+        if (array_key_exists('updated_at', $sanitized_data)) {
+            $formats[] = '%s';
+        }
+
         // Update service
         $result = $wpdb->update(
             $table_name,
             $sanitized_data,
             array('id' => $service_id),
-            array('%d', '%d', '%s', '%s', '%d', '%f', '%s', '%s', '%s', '%s'),
+            $formats,
             array('%d')
         );
         

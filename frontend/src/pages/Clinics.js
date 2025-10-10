@@ -13,6 +13,7 @@ import {
   Globe
 } from 'lucide-react';
 import { useClinics, useCreateClinic, useUpdateClinic, useDeleteClinic } from '@hooks/useApi';
+import { useToast } from '@components/Toast';
 import { 
   FormInput, 
   FormButton, 
@@ -112,7 +113,7 @@ const ClinicCard = ({ clinic, onEdit, onDelete, onView }) => {
   );
 };
 
-const ClinicForm = ({ clinic, onSave, onCancel, isOpen, isLoading, submitError, onClearSubmitError }) => {
+const ClinicForm = ({ clinic, onSave, onCancel, isOpen, isLoading }) => {
   const [formData, setFormData] = useState({
     name: clinic?.name || '',
     slug: clinic?.slug || '',
@@ -130,8 +131,11 @@ const ClinicForm = ({ clinic, onSave, onCancel, isOpen, isLoading, submitError, 
 
   const [errors, setErrors] = useState({});
 
-  // Reset form when clinic changes
+  // Reset form when clinic or modal open state changes.
+  // We only want to reset when the modal opens or the clinic to edit changes.
   React.useEffect(() => {
+    if (!isOpen) return; // don't reset when modal is closed
+
     if (clinic) {
       setFormData({
         name: clinic.name || '',
@@ -163,9 +167,10 @@ const ClinicForm = ({ clinic, onSave, onCancel, isOpen, isLoading, submitError, 
         status: 'active',
       });
     }
+
     setErrors({});
-    onClearSubmitError(); // Clear submit error when form resets
-  }, [clinic, onClearSubmitError]);
+  // form reset
+  }, [clinic, isOpen]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -202,7 +207,7 @@ const ClinicForm = ({ clinic, onSave, onCancel, isOpen, isLoading, submitError, 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onClearSubmitError(); // Clear any previous submit errors
+    // previous submit error clearing removed (toasts are used instead)
     if (validateForm()) {
       onSave(formData);
     }
@@ -222,7 +227,7 @@ const ClinicForm = ({ clinic, onSave, onCancel, isOpen, isLoading, submitError, 
       title={clinic ? 'Edit Clinic' : 'Add New Clinic'}
       size="lg"
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormInput
             label="Clinic Name"
@@ -324,26 +329,7 @@ const ClinicForm = ({ clinic, onSave, onCancel, isOpen, isLoading, submitError, 
           placeholder="Brief description of the clinic"
         />
 
-        {/* Submit Error Display */}
-        {submitError && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">
-                  Validation Error
-                </h3>
-                <div className="mt-2 text-sm text-red-700">
-                  {submitError}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* inline submit error removed - using toasts only */}
 
         <div className="flex items-center justify-end space-x-3 pt-4 border-t">
           <FormButton
@@ -363,6 +349,7 @@ const ClinicForm = ({ clinic, onSave, onCancel, isOpen, isLoading, submitError, 
 };
 
 const Clinics = () => {
+  const { addToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -428,20 +415,21 @@ const Clinics = () => {
         // Success - close form
         setShowForm(false);
         setEditingClinic(null);
+        try { addToast({ type: 'success', title: 'Clinic updated', message: 'Clinic updated successfully' }); } catch(e){}
       } else {
         await createClinicMutation.mutateAsync(formData);
         // Success - close form
         setShowForm(false);
         setEditingClinic(null);
+        try { addToast({ type: 'success', title: 'Clinic created', message: 'Clinic created successfully' }); } catch(e){}
       }
     } catch (error) {
       console.error('Failed to save clinic:', error);
-      
-      // Set submit error to display in form
+      // Show validation/server errors via toast only
       if (error.message && error.message !== 'Request failed') {
-        setSubmitError(error.message);
+        try { addToast({ type: 'error', title: '', message: error.message }); } catch(e){}
       } else {
-        setSubmitError('Failed to save clinic. Please try again.');
+        try { addToast({ type: 'error', title: 'Error', message: 'Failed to save clinic. Please try again.' }); } catch(e){}
       }
     }
   };

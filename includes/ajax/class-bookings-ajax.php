@@ -409,12 +409,55 @@ class MedX360_Bookings_AJAX extends MedX360_AJAX_Controller {
         // Add update timestamp
         $sanitized_data['updated_at'] = current_time('mysql');
         
+        // Build formats dynamically to match sanitized_data keys and avoid mismatches that can cause values like names to become "0"
+        $field_types = array(
+            'clinic_id' => 'int',
+            'hospital_id' => 'int',
+            'doctor_id' => 'int',
+            'service_id' => 'int',
+            'patient_name' => 'text',
+            'patient_email' => 'email',
+            'patient_phone' => 'text',
+            'patient_dob' => 'date',
+            'patient_gender' => 'text',
+            'appointment_date' => 'date',
+            'appointment_time' => 'time',
+            'duration_minutes' => 'int',
+            'status' => 'text',
+            'notes' => 'textarea',
+            'total_amount' => 'float',
+            'payment_status' => 'text',
+            'payment_method' => 'text',
+            'payment_reference' => 'text'
+        );
+
+        $formats = array();
+        foreach ($field_types as $field => $type) {
+            if (array_key_exists($field, $sanitized_data)) {
+                switch ($type) {
+                    case 'int':
+                        $formats[] = '%d';
+                        break;
+                    case 'float':
+                        $formats[] = '%f';
+                        break;
+                    default:
+                        $formats[] = '%s';
+                }
+            }
+        }
+
+        // Ensure updated_at is included and treated as string
+        if (array_key_exists('updated_at', $sanitized_data)) {
+            $formats[] = '%s';
+        }
+
         // Update booking
         $result = $wpdb->update(
             $table_name,
             $sanitized_data,
             array('id' => $booking_id),
-            array('%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%f', '%s', '%s', '%s', '%s'),
+            $formats,
             array('%d')
         );
         

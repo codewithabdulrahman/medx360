@@ -165,6 +165,11 @@ class MedX360_Staff_AJAX extends MedX360_AJAX_Controller {
         if (!$this->check_permission()) {
             $this->format_error_response(__('Permission denied', 'medx360'), 'permission_denied', 403);
         }
+
+        // Verify nonce
+        if (!$this->verify_nonce()) {
+            $this->format_error_response(__('Invalid nonce', 'medx360'), 'invalid_nonce', 403);
+        }
         
         global $wpdb;
         
@@ -220,11 +225,16 @@ class MedX360_Staff_AJAX extends MedX360_AJAX_Controller {
         $sanitized_data['created_at'] = current_time('mysql');
         $sanitized_data['updated_at'] = current_time('mysql');
         
-        // Insert staff member
-        $result = $wpdb->insert($table_name, $sanitized_data);
-        
-        if ($result === false) {
-            $this->format_error_response(__('Failed to create staff member', 'medx360'), 'create_failed', 500);
+        try {
+            // Insert staff member
+            $result = $wpdb->insert($table_name, $sanitized_data);
+
+            if ($result === false) {
+                $this->format_error_response(__('Failed to create staff member', 'medx360'), 'create_failed', 500);
+            }
+        } catch (Exception $e) {
+            MedX360_Logger::error('Exception creating staff member: ' . $e->getMessage(), array('exception' => $e));
+            $this->format_error_response(__('An unexpected error occurred while creating staff member', 'medx360'), 'create_exception', 500);
         }
         
         $staff_id = $wpdb->insert_id;
@@ -245,6 +255,11 @@ class MedX360_Staff_AJAX extends MedX360_AJAX_Controller {
         // Check permissions
         if (!$this->check_permission()) {
             $this->format_error_response(__('Permission denied', 'medx360'), 'permission_denied', 403);
+        }
+
+        // Verify nonce
+        if (!$this->verify_nonce()) {
+            $this->format_error_response(__('Invalid nonce', 'medx360'), 'invalid_nonce', 403);
         }
         
         global $wpdb;
@@ -319,17 +334,33 @@ class MedX360_Staff_AJAX extends MedX360_AJAX_Controller {
         // Add update timestamp
         $sanitized_data['updated_at'] = current_time('mysql');
         
-        // Update staff member
-        $result = $wpdb->update(
-            $table_name,
-            $sanitized_data,
-            array('id' => $staff_id),
-            array('%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'),
-            array('%d')
-        );
-        
-        if ($result === false) {
-            $this->format_error_response(__('Failed to update staff member', 'medx360'), 'update_failed', 500);
+        try {
+            // Build formats dynamically to match $sanitized_data
+            $int_fields = array('clinic_id', 'hospital_id', 'user_id');
+            $formats = array();
+            foreach ($sanitized_data as $key => $val) {
+                if (in_array($key, $int_fields, true)) {
+                    $formats[] = '%d';
+                } else {
+                    $formats[] = '%s';
+                }
+            }
+
+            // Update staff member
+            $result = $wpdb->update(
+                $table_name,
+                $sanitized_data,
+                array('id' => $staff_id),
+                $formats,
+                array('%d')
+            );
+
+            if ($result === false) {
+                $this->format_error_response(__('Failed to update staff member', 'medx360'), 'update_failed', 500);
+            }
+        } catch (Exception $e) {
+            MedX360_Logger::error('Exception updating staff member: ' . $e->getMessage(), array('exception' => $e));
+            $this->format_error_response(__('An unexpected error occurred while updating staff member', 'medx360'), 'update_exception', 500);
         }
         
         // Get updated staff member
@@ -348,6 +379,11 @@ class MedX360_Staff_AJAX extends MedX360_AJAX_Controller {
         // Check permissions
         if (!$this->check_permission()) {
             $this->format_error_response(__('Permission denied', 'medx360'), 'permission_denied', 403);
+        }
+
+        // Verify nonce
+        if (!$this->verify_nonce()) {
+            $this->format_error_response(__('Invalid nonce', 'medx360'), 'invalid_nonce', 403);
         }
         
         global $wpdb;
@@ -369,11 +405,16 @@ class MedX360_Staff_AJAX extends MedX360_AJAX_Controller {
             $this->format_error_response(__('Staff member not found', 'medx360'), 'staff_not_found', 404);
         }
         
-        // Delete staff member (cascade will handle related records)
-        $result = $wpdb->delete($table_name, array('id' => $staff_id), array('%d'));
-        
-        if ($result === false) {
-            $this->format_error_response(__('Failed to delete staff member', 'medx360'), 'delete_failed', 500);
+        try {
+            // Delete staff member (cascade will handle related records)
+            $result = $wpdb->delete($table_name, array('id' => $staff_id), array('%d'));
+
+            if ($result === false) {
+                $this->format_error_response(__('Failed to delete staff member', 'medx360'), 'delete_failed', 500);
+            }
+        } catch (Exception $e) {
+            MedX360_Logger::error('Exception deleting staff member: ' . $e->getMessage(), array('exception' => $e));
+            $this->format_error_response(__('An unexpected error occurred while deleting staff member', 'medx360'), 'delete_exception', 500);
         }
         
         $this->format_response(array('message' => __('Staff member deleted successfully', 'medx360')));
